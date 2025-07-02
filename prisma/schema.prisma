@@ -1,0 +1,306 @@
+generator client {
+  provider = "prisma-client-js" // Используем JavaScript/TypeScript клиент Prisma
+  output   = "./__generated__" // Путь для генерации типов и клиента
+}
+
+/// Настройки подключения к базе данных
+datasource db {
+  provider = "postgresql" // Используем PostgreSQL как СУБД
+  url      = env("DATABASE_URL") // URL подключения берется из переменной окружения
+}
+
+enum Role {
+  USER
+  ADMIN
+  UNKNOWN
+}
+
+/// Модель представляет собой пользователя, который взаимодействует с ботом через Telegram
+model User {
+  id              String  @id @default(uuid()) // Уникальный идентификатор пользователя в формате UUID
+  role            Role    @default(USER) // Роль пользователя
+  telegramId      BigInt  @unique @map("telegram_id") // ID пользователя в Telegram (уникальный)
+  telegramUser    String? @map("telegram_user") // Bio Name пользователя в Telegram (опционально)
+  telegramProfile String? @map("telegram_profile") // username пользователя в Telegram (опционально)
+  name            String? // Имя пользователя, указанное при регистрации (опционально)
+
+  hasOnboarded Boolean    @default(false) @map("has_onboarded")
+  favorites    Practice[] @relation("user_favorites") // Избранные практики пользователя (связь many-to-many)
+
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3) // Дата и время создания записи
+  updatedAt  DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3) // Дата и время последнего обновления
+  /// Для быстрого доступа к текущему плану
+  activePlan SubscriptionPlan @default(FREE) @map("active_plan")
+  /// Оставшиеся реплики общения с Зеней
+  replicas   Int              @default(10)
+
+  /// История всех платных подписок
+  subscriptions   Subscription[]
+  MetaCardHistory MetaCardHistory[]
+  conversatios    Conversation[]
+  Payment         Payment[]
+
+  @@index([telegramId]) // Индекс по Telegram ID для оптимизации запросов поиска
+  @@map("users") // Имя таблицы в базе данных
+}
+
+model Chapter {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  order       Int        @default(autoincrement()) // Порядок сортировки в списке глав
+  categories  Category[] // Связь с категориями, находящимися в этой главе
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("chapters")
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String
+  order     Int        @default(autoincrement()) // Порядок сортировки в списке категорий
+  // Добавляем связь с моделью Chapter
+  chapter   Chapter    @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String     @map("chapter_id")
+  practices Practice[]
+  facts     Fact[] // Связь с интересными фактами для этой категории
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  minPlan SubscriptionPlan @default(FREE) @map("min_plan")
+
+  @@index([chapterId])
+  @@map("categories")
+}
+
+// Психологическая практика
+// Модель содержит конкретные практики и техники, которые предлагаются пользователям
+model Practice {
+  id          String           @id @default(uuid()) // Уникальный идентификатор практики
+  title       String // Название практики
+  content     String? // Текстовое описание практики, инструкция (опционально)
+  isPublished Boolean          @default(false) @map("is_published") // Флаг публикации (видна ли практика пользователям)
+  order       Int              @default(autoincrement()) // Порядок сортировки в списке практик
+  category    Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade) // Связь с категорией
+  categoryId  String           @map("category_id") // Внешний ключ - идентификатор категории
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3) // Дата и время создания записи
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3) // Дата и время последнего обновления
+  favoritedBy User[]           @relation("user_favorites") // Пользователи, добавившие практику в избранное (many-to-many)
+  minPlan     SubscriptionPlan @default(FREE) @map("min_plan")
+
+  @@index([categoryId]) // Индекс по внешнему ключу для оптимизации запросов
+  @@map("practices") // Имя таблицы в базе данных
+}
+
+// Интересные факты для категорий
+// Модель содержит интересные факты, связанные с определенной категорией
+model Fact {
+  id         String           @id @default(uuid()) // Уникальный идентификатор факта
+  title      String // Заголовок блока фактов
+  facts      String[] // Массив фактов в формате MarkdownV2
+  category   Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade) // Связь с категорией
+  categoryId String           @map("category_id") // Внешний ключ - идентификатор категории
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3) // Дата и время создания записи
+  updatedAt  DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3) // Дата и время последнего обновления
+  minPlan    SubscriptionPlan @default(FREE) @map("min_plan")
+
+  @@index([categoryId]) // Индекс по внешнему ключу для оптимизации запросов
+  @@map("facts") // Имя таблицы в базе данных
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+  FILE
+}
+
+model Media {
+  id           String     @id @default(uuid()) // Уникальный идентификатор медиа
+  type         MediaType // тип файла, например PHOTO, VIDEO, FILE и т.д.
+  fileName     String     @unique // Уникальное имя файла например "media.jpeg"
+  filePath     String     @default("") // путь до медиа например "photo/media.jpeg"
+  fileId       String?    @unique // идентификатор файла, если используется
+  fileUniqueId String?    @unique // Уникальный идентификатор файла, если используется
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(3) // Дата и время создания записи
+  updatedAt    DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3) // Дата и время последнего обновления
+  MetaCard     MetaCard[]
+
+  @@map("media") // Имя таблицы в базе данных
+}
+
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  STANDARD
+  PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELED
+}
+
+enum Currency {
+  USD
+  UZS
+  XTR
+}
+
+model Subscription {
+  id     String             @id @default(uuid())
+  plan   SubscriptionPlan
+  status SubscriptionStatus @default(ACTIVE)
+
+  startsAt DateTime @default(now()) @map("starts_at") @db.Timestamptz(3)
+  endsAt   DateTime @map("ends_at") @db.Timestamptz(3)
+
+  /// Пробный доступ
+  isTrial Boolean @default(false)
+
+  /// Сумма, которую заплатил пользователь за эту подписку
+  amountPaid Decimal  @map("amount_paid") @db.Decimal(10, 2)
+  /// Валюта, в которой была оплата
+  currency   Currency
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  /// Связь c платежом (опционально)
+  payment Payment? @relation("subscription_payment")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3) // Дата и время создания записи
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3) // Дата и время последнего обновления
+
+  @@index([userId, status])
+  @@index([status, endsAt])
+  @@map("subscriptions")
+}
+
+model MetaCard {
+  id        String   @id @default(uuid())
+  title     String
+  mediaId   String   @map("media_id")
+  media     Media    @relation(fields: [mediaId], references: [id])
+  questions String[]
+
+  MetaCardHistory MetaCardHistory[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("meta_cards")
+}
+
+model MetaCardHistory {
+  id String @default(uuid())
+
+  // Должно быть как @id для уникальности
+  userId String @id @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lastAt DateTime? @map("last_at") @db.Timestamptz(3)
+
+  lastCardId String?   @map("last_card_id")
+  lastCard   MetaCard? @relation(fields: [lastCardId], references: [id])
+
+  seenIds String[] @default([])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([lastAt])
+  @@index([lastCardId])
+  @@map("meta_cards_history")
+}
+
+enum ConversationStatus {
+  ACTIVE
+  CLOSED
+}
+
+model Conversation {
+  id String @id @default(uuid())
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status ConversationStatus @default(ACTIVE)
+
+  startsAt DateTime  @default(now()) @map("started_at") @db.Timestamptz(3)
+  endsAt   DateTime? @map("ends_at") @db.Timestamptz(3)
+
+  messages Message[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("conversations")
+}
+
+enum MessageRole {
+  user
+  system
+}
+
+model Message {
+  id String @id @default(uuid())
+
+  summarized Boolean @default(false)
+
+  conversationId String       @map("conversation_id")
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  role      MessageRole
+  content   String
+  timestamp DateTime    @default(now())
+
+  /// Токены — чтобы считать стоимость и делать аналитику
+  promptTokens     Int? @map("prompt_tokens") // prompt_tokens
+  completionTokens Int? @map("completion_tokens") // completion_tokens
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([conversationId])
+  @@map("messages")
+}
+
+enum PaymentProvider {
+  FREEDOMPAY
+  STARS
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  CANCELED
+}
+
+model Payment {
+  id      String @id @default(uuid())
+  orderId String @unique @map("order_id")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount   Decimal         @db.Decimal(10, 2)
+  currency Currency
+  provider PaymentProvider @default(FREEDOMPAY)
+  status   PaymentStatus   @default(PENDING)
+
+  providerPaymentChargeId String? @map("provider_payment_charge_id")
+  telegramPaymentChargeId String? @map("telegram_payment_charge_id")
+
+  subscription   Subscription? @relation("subscription_payment", fields: [subscriptionId], references: [id])
+  subscriptionId String?       @unique @map("subscription_id")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId, createdAt])
+  @@index([userId, status])
+  @@index([subscriptionId])
+  @@index([status, provider])
+  @@map("payments")
+}

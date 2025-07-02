@@ -1,0 +1,45 @@
+version: '3.9'
+services:
+  db:
+    container_name: postgres
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: [
+      "postgres",
+      "-c", "shared_buffers=256MB",
+      "-c", "work_mem=128MB",
+      "-c", "max_connections=200",
+      "-c", "effective_cache_size=512MB",
+      "-c", "maintenance_work_mem=128MB"
+    ]
+    networks:
+      - backend
+
+  redis:
+    container_name: redis
+    image: redis:7.2
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  backend:

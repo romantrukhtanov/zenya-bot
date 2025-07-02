@@ -1,0 +1,13 @@
+export const ENVIRONMENT = process.env.NODE_ENV ?? 'development';
+export const IS_DEVELOPMENT = ENVIRONMENT === 'development';
+export const IS_PRODUCTION = ENVIRONMENT === 'production';
+
+export const SUPPORT_LINK = process.env.SUPPORT_LINK ?? 'https://t.me/zenya_support';
+
+export const PAYMENT_PROVIDER_TOKEN = process.env.PAYMENT_PROVIDER_TOKEN ?? '';
+export const TELEGRAM_ICON = process.env.TELEGRAM_ICON ?? '';
+
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
+export const OPENAI_MODEL = process.env.OPENAI_MODEL ?? 'gpt-4o-mini';
+export const OPENAI_PROMPT_BUDGET = Number(process.env.OPENAI_PROMPT_BUDGET ?? 3500);
+export const OPENAI_MAX_COMPLETION = Number(process.env.OPENAI_MAX_COMPLETION);
