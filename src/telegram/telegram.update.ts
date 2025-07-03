@@ -8,7 +8,7 @@ import { IS_PRODUCTION } from '@/env';
 import { AgentService } from '@/modules/agent';
 import { SubscriptionService } from '@/modules/subscription';
 import { UserService } from '@/modules/user';
-import { BotScene, BotSceneCallback } from '@/telegram/constants';
+import { BotScene, BotSceneCallback, BotSceneCommand } from '@/telegram/constants';
 import { SubscriptionWizardContext } from '@/telegram/scenes';
 import { getTelegramUser } from '@/telegram/utils';
 
@@ -44,51 +44,52 @@ export class TelegramUpdate {
 
 	@Roles(Role.ADMIN)
 	@Action(BotSceneCallback.AdminPanel)
-	@Command(BotSceneCallback.AdminPanel)
+	@Command(BotSceneCommand.Admin)
 	async onAdminPanelWizard(@Ctx() ctx: Scenes.SceneContext) {
 		await ctx.scene.enter(BotScene.Admin);
 	}
 
 	@Action(BotSceneCallback.Practice)
-	@Command(BotSceneCallback.Practice)
+	@Command(BotSceneCommand.Practices)
 	async onSelectPracticeWizard(@Ctx() ctx: Scenes.SceneContext) {
 		await ctx.scene.enter(BotScene.Practice);
 	}
 
 	@Action(BotSceneCallback.DailyCard)
-	@Command(BotSceneCallback.DailyCard)
+	@Command(BotSceneCommand.Mac)
 	async onDailyCardWizard(@Ctx() ctx: Scenes.SceneContext) {
 		await ctx.scene.enter(BotScene.DailyCard);
 	}
 
 	@Action(BotSceneCallback.Support)
-	@Command(BotSceneCallback.Support)
+	@Command(BotSceneCommand.Support)
 	@Help()
 	async onSupportWizard(@Ctx() ctx: Scenes.SceneContext) {
 		await ctx.scene.enter(BotScene.Support);
 	}
 
 	@Action(BotSceneCallback.Subscription)
-	@Command(BotSceneCallback.Subscription)
+	@Command(BotSceneCommand.Subscribe)
 	async onSubscriptionWizard(@Ctx() ctx: Scenes.SceneContext) {
 		await ctx.scene.enter(BotScene.Subscription);
 	}
 
 	@Action(BotSceneCallback.Account)
-	@Command(BotSceneCallback.Account)
+	@Command(BotSceneCommand.Account)
 	async onAccountWizard(@Ctx() ctx: Scenes.SceneContext) {
 		await ctx.scene.enter(BotScene.Account);
 	}
 
 	@Action(BotSceneCallback.AssistantChat)
-	@Command(BotSceneCallback.AssistantChat)
+	@Command(BotSceneCommand.Chat)
 	async onAssistantChatWizard(@Ctx() ctx: Scenes.SceneContext) {
 		await ctx.scene.enter(BotScene.ZenyaChat);
 	}
 
-	@Command('leave')
-	async onLeave(@Ctx() ctx: Scenes.SceneContext) {
-		await ctx.scene.leave();
+	@Command(BotSceneCommand.Menu)
+	@Command(BotSceneCommand.Leave)
+	async onMainMenu(@Ctx() ctx: Scenes.SceneContext) {
+		await this.onStart(ctx);
 	}
 
 	@Command('delete')
