@@ -12,11 +12,11 @@ import { MainMenuService, MediaService } from '@/common/services';
 import { CategoryService } from '@/modules/category';
 import { CreateCategoryDto } from '@/modules/category/dto/create-category.dto';
 import { ChapterService } from '@/modules/chapter';
-import { BotScene } from '@/telegram/constants';
+import { AdminScene, BotScene } from '@/telegram/constants';
 import { BaseCallback, BaseWizardScene } from '@/telegram/scenes/base';
 
 @Roles(Role.ADMIN)
-@Wizard(BotScene.AddCategory)
+@Wizard(AdminScene.AddCategory)
 export class AddCategoryWizard extends BaseWizardScene<AddCategoryWizardContext> {
 	constructor(
 		private readonly categoryService: CategoryService,

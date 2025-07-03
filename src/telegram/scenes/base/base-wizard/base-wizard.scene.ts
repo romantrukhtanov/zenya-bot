@@ -7,7 +7,7 @@ import { BaseWizardContext, Buttons } from './types';
 
 import { MainMenuService, MediaService } from '@/common/services';
 import { SUPPORT_LINK } from '@/env';
-import { BotScene } from '@/telegram/constants';
+import { AdminScene, BotScene } from '@/telegram/constants';
 import { translations } from '@/translations';
 
 export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
@@ -81,7 +81,7 @@ export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
 		ctx.wizard.state.skipSceneLeave = !!nextValue;
 	}
 
-	protected async navigateTo(ctx: TCtx, scene: BotScene) {
+	protected async navigateTo(ctx: TCtx, scene: BotScene | AdminScene) {
 		this.toggleSkipSceneLeave(ctx, true);
 
 		await ctx.answerCbQuery();

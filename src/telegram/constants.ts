@@ -1,16 +1,20 @@
 export enum BotScene {
 	Onboarding = 'ONBOARDING',
 	Practice = 'PRACTICE',
-	AddPractice = 'ADD_PRACTICE',
-	AddMetaCard = 'ADD_META_CARD',
-	AddCategory = 'ADD_CATEGORY',
-	AddFacts = 'ADD_FACTS',
 	Admin = 'ADMIN',
 	DailyCard = 'DAILY_CARD',
 	Support = 'SUPPORT',
 	Subscription = 'SUBSCRIPTION',
 	Account = 'ACCOUNT',
 	ZenyaChat = 'ZENYA_CHAT',
+}
+
+export enum AdminScene {
+	AddPractice = 'ADD_PRACTICE',
+	AddMetaCard = 'ADD_META_CARD',
+	AddCategory = 'ADD_CATEGORY',
+	AddFacts = 'ADD_FACTS',
+	CheckMedia = 'CHECK_MEDIA',
 }
 
 export enum BotSceneCallback {

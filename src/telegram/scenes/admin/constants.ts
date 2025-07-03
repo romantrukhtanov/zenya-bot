@@ -1,6 +1,7 @@
 export enum AdminSceneAction {
-	ADD_PRACTICE = 'admin_add_practice',
-	ADD_CATEGORY = 'admin_add_category',
-	ADD_FACTS = 'admin_add_facts',
-	ADD_META_CARD = 'admin_add_meta_card',
+	ADD_PRACTICE = 'admin:add:practice',
+	ADD_CATEGORY = 'admin:add:category',
+	ADD_FACTS = 'admin:add:facts',
+	ADD_META_CARD = 'admin:add:meta:card',
+	CHECK_MEDIA = 'admin:check:media',
 }

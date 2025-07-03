@@ -21,6 +21,18 @@ export abstract class MediaUtils {
 		});
 	}
 
+	public async checkMediaFile(fileId: string) {
+		try {
+			const file = await this.bot.telegram.getFile(fileId);
+			return !!file;
+		} catch (error) {
+			if (error instanceof TelegramError && error.code === 400) {
+				return false;
+			}
+			throw error;
+		}
+	}
+
 	/* ─────────────  PROTECTED HELPERS  ───────────── */
 	protected replyText(ctx: Context | number, text: string, extra: ExtraOptions = {}) {
 		const extraOptions = buildExtraOptions(extra);

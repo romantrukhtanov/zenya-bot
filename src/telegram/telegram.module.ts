@@ -10,6 +10,7 @@ import {
 	AddPracticeWizard,
 	AdminWizard,
 	ChatWizard,
+	CheckMediaWizard,
 	DailyCardWizard,
 	OnboardingWizard,
 	PracticeWizard,
@@ -32,13 +33,18 @@ import { PracticeModule } from '@/modules/practice';
 import { RedisModule } from '@/redis/redis.module';
 import { RedisService } from '@/redis/redis.service';
 
-const TELEGRAM_SCENES = [
-	AdminWizard,
-	OnboardingWizard,
+const ADMIN_SCENES = [
 	AddCategoryWizard,
 	AddPracticeWizard,
 	AddFactsWizard,
 	AddMetaCardWizard,
+	CheckMediaWizard,
+];
+
+const TELEGRAM_SCENES = [
+	...ADMIN_SCENES,
+	AdminWizard,
+	OnboardingWizard,
 	PracticeWizard,
 	DailyCardWizard,
 	SupportWizard,

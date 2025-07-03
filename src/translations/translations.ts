@@ -114,6 +114,7 @@ export const translations = {
 			addCategoryButton: '📤 Добавить категорию',
 			addFactsButton: '📝 Добавить факты',
 			addCardButton: '🔮 Добавить мак',
+			checkMediaButton: '🗂️ Проверка медиа',
 		},
 	},
 	adminScenes: {

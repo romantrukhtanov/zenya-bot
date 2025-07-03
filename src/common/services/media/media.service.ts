@@ -46,6 +46,10 @@ export class MediaService extends MediaUtils {
 	}
 
 	/* ─────────────  PUBLIC API  ───────────── */
+	async getAllByType(type: MediaType): Promise<Media[]> {
+		return this.prisma.media.findMany({ where: { type } });
+	}
+
 	async sendVideo(
 		ctx: Context | number,
 		filePath: string,
@@ -73,7 +77,6 @@ export class MediaService extends MediaUtils {
 		return this.uploadVideoAndSave(ctx, filePath, fileName, extra);
 	}
 
-	/* ---------- public: EDIT VIDEO ---------- */
 	async editVideo(
 		ctx: Context | number,
 		messageId: number,
