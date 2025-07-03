@@ -7,7 +7,7 @@ import { AdminWizardContext } from './types';
 
 import { Roles } from '@/common/decorators';
 import { MainMenuService, MediaService } from '@/common/services';
-import { BotScene } from '@/telegram/constants';
+import { AdminScene, BotScene } from '@/telegram/constants';
 import { BaseWizardScene } from '@/telegram/scenes/base';
 import { translations } from '@/translations';
 
@@ -37,6 +37,10 @@ export class AdminWizard extends BaseWizardScene<AdminWizardContext> {
 				translations.scenes.admin.addCardButton,
 				AdminSceneAction.ADD_META_CARD,
 			),
+			Markup.button.callback(
+				translations.scenes.admin.checkMediaButton,
+				AdminSceneAction.CHECK_MEDIA,
+			),
 			this.homeButton,
 		];
 
@@ -50,21 +54,26 @@ export class AdminWizard extends BaseWizardScene<AdminWizardContext> {
 
 	@Action(AdminSceneAction.ADD_PRACTICE)
 	async onAddPractice(@Ctx() ctx: AdminWizardContext) {
-		return this.navigateTo(ctx, BotScene.AddPractice);
+		return this.navigateTo(ctx, AdminScene.AddPractice);
 	}
 
 	@Action(AdminSceneAction.ADD_CATEGORY)
 	async onAddCategory(@Ctx() ctx: AdminWizardContext) {
-		return this.navigateTo(ctx, BotScene.AddCategory);
+		return this.navigateTo(ctx, AdminScene.AddCategory);
 	}
 
 	@Action(AdminSceneAction.ADD_FACTS)
 	async onAddFacts(@Ctx() ctx: AdminWizardContext) {
-		return this.navigateTo(ctx, BotScene.AddFacts);
+		return this.navigateTo(ctx, AdminScene.AddFacts);
 	}
 
 	@Action(AdminSceneAction.ADD_META_CARD)
 	async onAddMetaCard(@Ctx() ctx: AdminWizardContext) {
-		return this.navigateTo(ctx, BotScene.AddMetaCard);
+		return this.navigateTo(ctx, AdminScene.AddMetaCard);
+	}
+
+	@Action(AdminSceneAction.CHECK_MEDIA)
+	async onCheckMedia(@Ctx() ctx: AdminWizardContext) {
+		return this.navigateTo(ctx, AdminScene.CheckMedia);
 	}
 }

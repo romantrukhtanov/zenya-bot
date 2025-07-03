@@ -12,11 +12,11 @@ import { MainMenuService, MediaService } from '@/common/services';
 import { CategoryService } from '@/modules/category';
 import { ChapterService } from '@/modules/chapter';
 import { CreatePracticeDto, PracticeService } from '@/modules/practice';
-import { BotScene } from '@/telegram/constants';
+import { AdminScene, BotScene } from '@/telegram/constants';
 import { BaseCallback, BaseWizardScene } from '@/telegram/scenes/base';
 
 @Roles(Role.ADMIN)
-@Wizard(BotScene.AddPractice)
+@Wizard(AdminScene.AddPractice)
 export class AddPracticeWizard extends BaseWizardScene<AddPracticeWizardContext> {
 	constructor(
 		private readonly categoryService: CategoryService,

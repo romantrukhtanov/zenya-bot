@@ -13,11 +13,11 @@ import { CategoryService } from '@/modules/category';
 import { ChapterService } from '@/modules/chapter';
 import { FactService, validateCreateFactData } from '@/modules/fact';
 import { CreateFactDto } from '@/modules/fact/dto/create-fact.dto';
-import { BotScene } from '@/telegram/constants';
+import { AdminScene, BotScene } from '@/telegram/constants';
 import { BaseCallback, BaseWizardScene } from '@/telegram/scenes/base';
 
 @Roles(Role.ADMIN)
-@Wizard(BotScene.AddFacts)
+@Wizard(AdminScene.AddFacts)
 export class AddFactsWizard extends BaseWizardScene<AddFactsWizardContext> {
 	constructor(
 		private readonly categoryService: CategoryService,

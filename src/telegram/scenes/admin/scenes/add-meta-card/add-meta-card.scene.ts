@@ -12,11 +12,11 @@ import { MainMenuService, MediaService } from '@/common/services';
 import type { CreateMediaDto } from '@/common/services/media/dto';
 import type { CreateMetaCardDto } from '@/modules/meta-card';
 import { MetaCardService } from '@/modules/meta-card';
-import { BotScene } from '@/telegram/constants';
+import { AdminScene, BotScene } from '@/telegram/constants';
 import { BaseCallback, BaseWizardScene } from '@/telegram/scenes/base';
 
 @Roles(Role.ADMIN)
-@Wizard(BotScene.AddMetaCard)
+@Wizard(AdminScene.AddMetaCard)
 export class AddMetaCardWizard extends BaseWizardScene<AddMetaCardWizardContext> {
 	constructor(
 		private readonly metaCardService: MetaCardService,
