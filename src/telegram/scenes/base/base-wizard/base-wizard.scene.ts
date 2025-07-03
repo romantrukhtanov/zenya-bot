@@ -7,7 +7,7 @@ import { BaseWizardContext, Buttons } from './types';
 
 import { MainMenuService, MediaService } from '@/common/services';
 import { SUPPORT_LINK } from '@/env';
-import { AdminScene, BotScene } from '@/telegram/constants';
+import { AdminScene, BotScene, BotSceneCommand } from '@/telegram/constants';
 import { translations } from '@/translations';
 
 export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
@@ -130,12 +130,12 @@ export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
 		return ctx.scene.leave();
 	}
 
-	@Command('leave')
+	@Command(BotSceneCommand.Leave)
 	protected async onLeave(@Ctx() ctx: TCtx) {
 		return ctx.scene.leave();
 	}
 
-	@Command('menu')
+	@Command(BotSceneCommand.Menu)
 	protected async onMenu(@Ctx() ctx: TCtx) {
 		return ctx.scene.leave();
 	}

@@ -9,6 +9,18 @@ export enum BotScene {
 	ZenyaChat = 'ZENYA_CHAT',
 }
 
+export enum BotSceneCommand {
+	Menu = 'menu',
+	Practices = 'practices',
+	Mac = 'mac',
+	Chat = 'chat',
+	Subscribe = 'subscribe',
+	Account = 'account',
+	Support = 'support',
+	Admin = 'admin',
+	Leave = 'leave',
+}
+
 export enum AdminScene {
 	AddPractice = 'ADD_PRACTICE',
 	AddMetaCard = 'ADD_META_CARD',
