@@ -1,1 +1,14 @@
-pnpm test
+#!/usr/bin/env sh
+
+pnpm lint-staged
+
+npx tsc
+
+# Check branch name
+branch_name=$(git symbolic-ref --short HEAD)
+
+if ! echo "$branch_name" | grep -qE "^(test|feat|fix|chore|docs|refactor|style|ci|perf|hotfix)/(PSY)-[0-9]+_[a-z_]+$"; then
+  echo "Branch name '$branch_name' does not match the required pattern."
+  echo "Please make sure the branch name follows the pattern ^(test|feat|fix|chore|docs|refactor|style|ci|perf|hotfix)/(PSY)-[0-9]+_[a-z_]+$"
+  exit 1
+fi
