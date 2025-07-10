@@ -9,55 +9,55 @@ type ReturnSet = ReturnType<RedisService['set']>;
 type ReturnDelete = ReturnType<RedisService['delete']>;
 
 export interface TelegramRedisOptions {
-	/**
-	 * Префикс, добавляемый ко всем ключам в Redis
-	 *
-	 * По умолчанию: 'tg:sess:'
-	 */
-	keyPrefix?: string;
-	/**
-	 * TTL в секундах.
-	 * Если не передан, ключи будут храниться бессрочно
-	 */
-	ttl?: number;
+  /**
+   * Префикс, добавляемый ко всем ключам в Redis
+   *
+   * По умолчанию: 'tg:sess:'
+   */
+  keyPrefix?: string;
+  /**
+   * TTL в секундах.
+   * Если не передан, ключи будут храниться бессрочно
+   */
+  ttl?: number;
 }
 
 export class TelegramRedis {
-	private readonly keyPrefix: string;
-	private readonly ttl?: number;
+  private readonly keyPrefix: string;
+  private readonly ttl?: number;
 
-	constructor(
-		private readonly redisService: RedisService,
-		{ keyPrefix = REDIS_KEY.TELEGRAM_SESSION, ttl }: TelegramRedisOptions = {},
-	) {
-		this.keyPrefix = keyPrefix;
-		this.ttl = ttl;
-	}
+  constructor(
+    private readonly redisService: RedisService,
+    { keyPrefix = REDIS_KEY.TELEGRAM_SESSION, ttl }: TelegramRedisOptions = {},
+  ) {
+    this.keyPrefix = keyPrefix;
+    this.ttl = ttl;
+  }
 
-	async get<TData>(...args: RedisGetArgs): ReturnGet {
-		const [key] = args;
-		return this.redisService.get<TData>(this.buildKey(key));
-	}
+  async get<TData>(...args: RedisGetArgs): ReturnGet {
+    const [key] = args;
+    return this.redisService.get<TData>(this.buildKey(key));
+  }
 
-	async set<TValue>(...args: RedisSetArgs): ReturnSet {
-		const [key, value, options] = args;
+  async set<TValue>(...args: RedisSetArgs): ReturnSet {
+    const [key, value, options] = args;
 
-		const fullKey = this.buildKey(key);
+    const fullKey = this.buildKey(key);
 
-		const fullOptions = {
-			flags: options?.flags ?? [],
-			ttl: this.ttl,
-		};
+    const fullOptions = {
+      flags: options?.flags ?? [],
+      ttl: this.ttl,
+    };
 
-		await this.redisService.set<TValue>(fullKey, value as TValue, fullOptions);
-	}
+    await this.redisService.set<TValue>(fullKey, value as TValue, fullOptions);
+  }
 
-	async delete(...args: RedisDeleteArgs): ReturnDelete {
-		const [key] = args;
-		await this.redisService.delete(this.buildKey(key));
-	}
+  async delete(...args: RedisDeleteArgs): ReturnDelete {
+    const [key] = args;
+    await this.redisService.delete(this.buildKey(key));
+  }
 
-	private buildKey(key: string): string {
-		return `${this.keyPrefix}:${key}`;
-	}
+  private buildKey(key: string): string {
+    return `${this.keyPrefix}:${key}`;
+  }
 }

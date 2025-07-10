@@ -12,21 +12,18 @@ import { QueueModule } from '@/modules/queue';
 
 @Global()
 @Module({
-	imports: [
-		ConfigModule,
-		QueueModule.register({ queues: [QUEUE_AGENT_CHAT, QUEUE_AGENT_INACTIVITY] }),
-	],
-	providers: [
-		{
-			provide: AgentClient,
-			inject: [ConfigService],
-			useFactory: agentModuleOptionsFactory,
-		},
-		AgentService,
-		AgentChatWorker,
-		AgentInactivityWorker,
-		MediaService,
-	],
-	exports: [AgentClient, AgentService],
+  imports: [ConfigModule, QueueModule.register({ queues: [QUEUE_AGENT_CHAT, QUEUE_AGENT_INACTIVITY] })],
+  providers: [
+    {
+      provide: AgentClient,
+      inject: [ConfigService],
+      useFactory: agentModuleOptionsFactory,
+    },
+    AgentService,
+    AgentChatWorker,
+    AgentInactivityWorker,
+    MediaService,
+  ],
+  exports: [AgentClient, AgentService],
 })
 export class AgentModule {}

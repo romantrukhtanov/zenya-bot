@@ -6,8 +6,8 @@ import { SentryService } from './sentry.service';
 
 @Global()
 @Module({
-	imports: [SentryCoreModule.forRoot()],
-	providers: [SentryService, SentryHttpFilterProvider],
-	exports: [SentryService],
+  imports: [SentryCoreModule.forRoot()],
+  providers: [SentryService, SentryHttpFilterProvider],
+  exports: [SentryService],
 })
 export class SentryModule {}

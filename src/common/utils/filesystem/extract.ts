@@ -7,7 +7,7 @@ import { basename, dirname } from 'node:path';
  * @returns имя файла с расширением
  */
 export const extractFileName = (filePath: string, suffix?: string): string => {
-	return basename(filePath, suffix);
+  return basename(filePath, suffix);
 };
 
 /**
@@ -16,5 +16,5 @@ export const extractFileName = (filePath: string, suffix?: string): string => {
  * @returns путь к директории (без завершающего слэша, кроме корня)
  */
 export const extractDirName = (filePath: string): string => {
-	return dirname(filePath);
+  return dirname(filePath);
 };

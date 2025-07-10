@@ -1,7 +1,7 @@
 export enum AccountCallback {
-	ChangeName = 'change:name',
+  ChangeName = 'change:name',
 }
 
 export enum AccountMedia {
-	Hello = 'hello.mp4',
+  Hello = 'hello.mp4',
 }

@@ -9,20 +9,20 @@ import { QueueModule } from '@/modules/queue';
 
 @Global()
 @Module({
-	imports: [
-		QueueModule.register({
-			queues: [
-				{
-					name: QUEUE_BROADCAST,
-					defaultJobOptions: {
-						attempts: 5,
-						backoff: { type: 'exponential', delay: 500 },
-					},
-				},
-			],
-		}),
-	],
-	providers: [BroadcastService, BroadcastWorker, MediaService],
-	exports: [BroadcastService],
+  imports: [
+    QueueModule.register({
+      queues: [
+        {
+          name: QUEUE_BROADCAST,
+          defaultJobOptions: {
+            attempts: 5,
+            backoff: { type: 'exponential', delay: 500 },
+          },
+        },
+      ],
+    }),
+  ],
+  providers: [BroadcastService, BroadcastWorker, MediaService],
+  exports: [BroadcastService],
 })
 export class BroadcastModule {}

@@ -9,20 +9,16 @@ import { translations } from '@/translations';
 
 @Processor(QUEUE_AGENT_INACTIVITY)
 export class AgentInactivityWorker extends WorkerHost {
-	constructor(
-		private readonly mediaService: MediaService,
-		private readonly agentService: AgentService,
-	) {
-		super();
-	}
+  constructor(
+    private readonly mediaService: MediaService,
+    private readonly agentService: AgentService,
+  ) {
+    super();
+  }
 
-	async process(job: Job<{ convId: string; chatId: number }>) {
-		await this.agentService.closeConversation(job.data.convId);
+  async process(job: Job<{ convId: string; chatId: number }>) {
+    await this.agentService.closeConversation(job.data.convId);
 
-		await this.mediaService.sendText(
-			job.data.chatId,
-			translations.scenes.chat.inactiveNotification,
-			{ parseMode: 'MarkdownV2' },
-		);
-	}
+    await this.mediaService.sendText(job.data.chatId, translations.scenes.chat.inactiveNotification, { parseMode: 'MarkdownV2' });
+  }
 }

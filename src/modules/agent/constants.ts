@@ -4,8 +4,8 @@ export const QUEUE_AGENT_INACTIVITY = 'agent-inactivity';
 export const INACTIVE_DELAY_MINUTES = 60;
 
 export enum QueueJobName {
-	Send = 'Send',
-	Inactive = 'Inactive',
+  Send = 'Send',
+  Inactive = 'Inactive',
 }
 
 export const AGENT_INSTRUCTIONS = `

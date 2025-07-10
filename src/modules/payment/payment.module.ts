@@ -4,7 +4,7 @@ import { PaymentService } from './payment.service';
 
 @Global()
 @Module({
-	providers: [PaymentService],
-	exports: [PaymentService],
+  providers: [PaymentService],
+  exports: [PaymentService],
 })
 export class PaymentModule {}

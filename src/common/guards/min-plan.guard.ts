@@ -12,45 +12,42 @@ import { translations } from '@/translations';
 
 @Injectable()
 export class MinPlanGuard implements CanActivate {
-	constructor(
-		private readonly reflector: Reflector,
-		private readonly userService: UserService,
-	) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly userService: UserService,
+  ) {}
 
-	async canActivate(ctx: ExecutionContext): Promise<boolean> {
-		const requiredPlan = this.reflector.getAllAndOverride<SubscriptionPlan>(MIN_PLAN_KEY, [
-			ctx.getHandler(),
-			ctx.getClass(),
-		]);
+  async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const requiredPlan = this.reflector.getAllAndOverride<SubscriptionPlan>(MIN_PLAN_KEY, [ctx.getHandler(), ctx.getClass()]);
 
-		if (!requiredPlan) {
-			return true;
-		}
+    if (!requiredPlan) {
+      return true;
+    }
 
-		const tgCtx = TelegrafExecutionContext.create(ctx).getContext<Context>();
+    const tgCtx = TelegrafExecutionContext.create(ctx).getContext<Context>();
 
-		const telegramId = tgCtx.from?.id;
+    const telegramId = tgCtx.from?.id;
 
-		if (!telegramId) {
-			throw new ForbiddenException(translations.error.user);
-		}
+    if (!telegramId) {
+      throw new ForbiddenException(translations.error.user);
+    }
 
-		const role = await this.userService.getUserRole(telegramId);
+    const role = await this.userService.getUserRole(telegramId);
 
-		if (role === Role.ADMIN) {
-			return true;
-		}
+    if (role === Role.ADMIN) {
+      return true;
+    }
 
-		const activePlan = await this.userService.getActiveUserPlan(telegramId);
+    const activePlan = await this.userService.getActiveUserPlan(telegramId);
 
-		const isOkPlan = isPlanSufficient(activePlan, requiredPlan);
+    const isOkPlan = isPlanSufficient(activePlan, requiredPlan);
 
-		if (!isOkPlan) {
-			throw new ForbiddenException(`Нужен план ${requiredPlan}, у вас ${activePlan}`);
-		}
+    if (!isOkPlan) {
+      throw new ForbiddenException(`Нужен план ${requiredPlan}, у вас ${activePlan}`);
+    }
 
-		return true;
-	}
+    return true;
+  }
 }
 
 export const MinPlanProvider: Provider = { provide: APP_GUARD, useClass: MinPlanGuard };

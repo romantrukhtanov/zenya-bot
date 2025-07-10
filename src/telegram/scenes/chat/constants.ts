@@ -1,14 +1,14 @@
 export enum ChatCallback {
-	StartDialog = 'start:dialog',
-	Back = 'back',
-	CancelConversation = 'cancel:conversation',
+  StartDialog = 'start:dialog',
+  Back = 'back',
+  CancelConversation = 'cancel:conversation',
 }
 
 export enum ChatStep {
-	Initial,
-	Dialog,
+  Initial,
+  Dialog,
 }
 
 export enum ChatMedia {
-	Intro = 'chatbot.mp4',
+  Intro = 'chatbot.mp4',
 }

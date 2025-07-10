@@ -23,18 +23,18 @@ import { IS_DEVELOPMENT } from '@/env';
 
 // @ts-expect-error: never in production
 export function exhaustiveCheck(param: never, throwOnError = true): never {
-	const paramAsString = (() => {
-		try {
-			return JSON.stringify(param);
-		} catch {
-			return String(param);
-		}
-	})();
-	const errorText = `exhaustiveCheck unknown param: ${paramAsString}`;
+  const paramAsString = (() => {
+    try {
+      return JSON.stringify(param);
+    } catch {
+      return String(param);
+    }
+  })();
+  const errorText = `exhaustiveCheck unknown param: ${paramAsString}`;
 
-	if (throwOnError && IS_DEVELOPMENT) {
-		throw new Error(errorText);
-	} else {
-		console.error(errorText);
-	}
+  if (throwOnError && IS_DEVELOPMENT) {
+    throw new Error(errorText);
+  } else {
+    console.error(errorText);
+  }
 }

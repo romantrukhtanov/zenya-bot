@@ -5,17 +5,17 @@ import { IS_DEVELOPMENT } from '@/env';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-	constructor() {
-		super({
-			log: IS_DEVELOPMENT ? ['query', 'error', 'warn'] : ['error'],
-		});
-	}
+  constructor() {
+    super({
+      log: IS_DEVELOPMENT ? ['query', 'error', 'warn'] : ['error'],
+    });
+  }
 
-	async onModuleInit() {
-		await this.$connect();
-	}
+  async onModuleInit() {
+    await this.$connect();
+  }
 
-	async onModuleDestroy() {
-		await this.$disconnect();
-	}
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
 }

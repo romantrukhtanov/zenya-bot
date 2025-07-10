@@ -1,21 +1,21 @@
 import { IsString, IsOptional, IsBoolean, IsInt, IsUUID } from 'class-validator';
 
 export class CreatePracticeDto {
-	@IsString()
-	title: string;
+  @IsString()
+  title: string;
 
-	@IsOptional()
-	@IsString()
-	content?: string;
+  @IsOptional()
+  @IsString()
+  content?: string;
 
-	@IsUUID()
-	categoryId: string;
+  @IsUUID()
+  categoryId: string;
 
-	@IsOptional()
-	@IsBoolean()
-	isPublished?: boolean = true;
+  @IsOptional()
+  @IsBoolean()
+  isPublished?: boolean = true;
 
-	@IsOptional()
-	@IsInt()
-	order?: number = 0;
+  @IsOptional()
+  @IsInt()
+  order?: number = 0;
 }

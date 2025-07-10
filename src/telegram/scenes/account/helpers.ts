@@ -10,38 +10,38 @@ const NONE_SYMBOL = '–';
 const INFINITE_SYMBOL = '∞';
 
 export const getUserInfo = (user: User, activeSubscription?: Subscription | null) => {
-	const isAdmin = isUserAdmin(user.role);
+  const isAdmin = isUserAdmin(user.role);
 
-	const lines: string[] = [
-		`${translations.scenes.account.intro}\n`,
-		`${translations.scenes.account.name} <strong>${user.name ?? NONE_SYMBOL}</strong>`,
-		`${translations.scenes.account.subscription} <strong>${SubscriptionPlanTitle[user.activePlan]}</strong>`,
-		`${getExpirationDate(activeSubscription, isAdmin)}`,
-		`${translations.scenes.account.remainingReplies} <strong>${getRemainingReplies(user, isAdmin)}</strong>\n`,
-		`${translations.scenes.account.id} <code>${user.telegramId}</code>`,
-	].filter(Boolean);
+  const lines: string[] = [
+    `${translations.scenes.account.intro}\n`,
+    `${translations.scenes.account.name} <strong>${user.name ?? NONE_SYMBOL}</strong>`,
+    `${translations.scenes.account.subscription} <strong>${SubscriptionPlanTitle[user.activePlan]}</strong>`,
+    `${getExpirationDate(activeSubscription, isAdmin)}`,
+    `${translations.scenes.account.remainingReplies} <strong>${getRemainingReplies(user, isAdmin)}</strong>\n`,
+    `${translations.scenes.account.id} <code>${user.telegramId}</code>`,
+  ].filter(Boolean);
 
-	return lines.join('\n');
+  return lines.join('\n');
 };
 
 const getRemainingReplies = (user: User, isAdmin?: boolean) => {
-	if (isAdmin) {
-		return INFINITE_SYMBOL;
-	}
+  if (isAdmin) {
+    return INFINITE_SYMBOL;
+  }
 
-	return user.replicas || NONE_SYMBOL;
+  return user.replicas || NONE_SYMBOL;
 };
 
 const getExpirationDate = (subscription?: Subscription | null, isAdmin?: boolean) => {
-	if (isAdmin) {
-		return `${translations.scenes.account.expiresAt} <strong>${INFINITE_SYMBOL}</strong>`;
-	}
+  if (isAdmin) {
+    return `${translations.scenes.account.expiresAt} <strong>${INFINITE_SYMBOL}</strong>`;
+  }
 
-	if (!subscription || subscription.plan === SubscriptionPlan.FREE) {
-		return '';
-	}
+  if (!subscription || subscription.plan === SubscriptionPlan.FREE) {
+    return '';
+  }
 
-	const formattedDate = format(subscription.endsAt, 'dd.MM.yyyy');
+  const formattedDate = format(subscription.endsAt, 'dd.MM.yyyy');
 
-	return `${translations.scenes.account.expiresAt} <strong>${formattedDate}</strong>`;
+  return `${translations.scenes.account.expiresAt} <strong>${formattedDate}</strong>`;
 };

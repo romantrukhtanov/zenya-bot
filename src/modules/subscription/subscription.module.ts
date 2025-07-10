@@ -9,8 +9,8 @@ import { QueueModule } from '@/modules/queue';
 
 @Global()
 @Module({
-	imports: [QueueModule.register({ queues: [QUEUE_SUBSCRIPTIONS] })],
-	providers: [SubscriptionService, SubscriptionWorker, MediaService],
-	exports: [SubscriptionService],
+  imports: [QueueModule.register({ queues: [QUEUE_SUBSCRIPTIONS] })],
+  providers: [SubscriptionService, SubscriptionWorker, MediaService],
+  exports: [SubscriptionService],
 })
 export class SubscriptionModule {}
