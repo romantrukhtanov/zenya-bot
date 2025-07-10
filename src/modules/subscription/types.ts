@@ -1,8 +1,8 @@
 export type ExpireJobType = {
-	userId: string;
+  userId: string;
 };
 
 export type NotifyBeforeExpireJobType = {
-	userId: string;
-	expireAt: Date;
+  userId: string;
+  expireAt: Date;
 };

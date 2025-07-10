@@ -8,27 +8,24 @@ import type { MediaType } from '@prisma/__generated__';
 import type { Context } from 'telegraf';
 
 type SaveToPublicDirOptions = {
-	fileId: string;
-	filePath: string;
-	type: MediaType;
+  fileId: string;
+  filePath: string;
+  type: MediaType;
 };
 
-export const saveToPublicDir = async (
-	ctx: Context,
-	options: SaveToPublicDirOptions,
-): Promise<void> => {
-	const fileLink = await ctx.telegram.getFileLink(options.fileId);
+export const saveToPublicDir = async (ctx: Context, options: SaveToPublicDirOptions): Promise<void> => {
+  const fileLink = await ctx.telegram.getFileLink(options.fileId);
 
-	await mkdir(dirname(options.filePath), { recursive: true });
+  await mkdir(dirname(options.filePath), { recursive: true });
 
-	const readableStream = await new Promise<NodeJS.ReadableStream>((resolve, reject) => {
-		get(fileLink, (res) => {
-			if (res.statusCode !== 200) {
-				return reject(new Error(`Не удалось скачать файл, статус ${res.statusCode}`));
-			}
-			resolve(res);
-		}).on('error', reject);
-	});
+  const readableStream = await new Promise<NodeJS.ReadableStream>((resolve, reject) => {
+    get(fileLink, res => {
+      if (res.statusCode !== 200) {
+        return reject(new Error(`Не удалось скачать файл, статус ${res.statusCode}`));
+      }
+      resolve(res);
+    }).on('error', reject);
+  });
 
-	await pipeline(readableStream, createWriteStream(options.filePath));
+  await pipeline(readableStream, createWriteStream(options.filePath));
 };

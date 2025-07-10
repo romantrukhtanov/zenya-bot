@@ -1,9 +1,4 @@
-import {
-	type CanActivate,
-	type ExecutionContext,
-	ForbiddenException,
-	Injectable,
-} from '@nestjs/common';
+import { type CanActivate, type ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import type { Provider } from '@nestjs/common/interfaces/modules/provider.interface';
 import { APP_GUARD, Reflector } from '@nestjs/core';
 import { Role } from '@prisma/__generated__';
@@ -16,39 +11,36 @@ import { translations } from '@/translations';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-	constructor(
-		private readonly reflector: Reflector,
-		private readonly userService: UserService,
-	) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly userService: UserService,
+  ) {}
 
-	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
-			context.getHandler(),
-			context.getClass(),
-		]);
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(), context.getClass()]);
 
-		if (!requiredRoles || requiredRoles.length === 0) {
-			return true;
-		}
+    if (!requiredRoles || requiredRoles.length === 0) {
+      return true;
+    }
 
-		const tgCtx = TelegrafExecutionContext.create(context).getContext<Context>();
+    const tgCtx = TelegrafExecutionContext.create(context).getContext<Context>();
 
-		const telegramId = tgCtx.from?.id;
+    const telegramId = tgCtx.from?.id;
 
-		if (!telegramId) {
-			throw new ForbiddenException(translations.error.user);
-		}
+    if (!telegramId) {
+      throw new ForbiddenException(translations.error.user);
+    }
 
-		const userRole = await this.userService.getUserRole(telegramId);
+    const userRole = await this.userService.getUserRole(telegramId);
 
-		const hasRole = requiredRoles.includes(userRole);
+    const hasRole = requiredRoles.includes(userRole);
 
-		if (!hasRole) {
-			throw new ForbiddenException('🔐 Недостаточно доступа');
-		}
+    if (!hasRole) {
+      throw new ForbiddenException('🔐 Недостаточно доступа');
+    }
 
-		return true;
-	}
+    return true;
+  }
 }
 
 export const RolesProvider: Provider = { provide: APP_GUARD, useClass: RolesGuard };

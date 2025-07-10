@@ -11,26 +11,19 @@ import { getTelegramToken } from '@/telegram/utils';
 const TELEGRAM_SESSION_TTL = secondsInDays(1);
 
 export const telegramModuleOptionsFactory = (
-	configService: ConfigService,
-	redisService: RedisService,
-	rateLimitMiddleware: RateLimitMiddleware,
-	sentryMiddleware: SentryMiddleware,
+  configService: ConfigService,
+  redisService: RedisService,
+  rateLimitMiddleware: RateLimitMiddleware,
+  sentryMiddleware: SentryMiddleware,
 ): TelegrafModuleOptions => {
-	const ttlSeconds = configService.get<number>(
-		'REDIS_SESSION_TTL',
-		secondsInDays(TELEGRAM_SESSION_TTL),
-	); // 1 День
+  const ttlSeconds = configService.get<number>('REDIS_SESSION_TTL', secondsInDays(TELEGRAM_SESSION_TTL)); // 1 День
 
-	const store = new TelegramRedis(redisService, {
-		ttl: ttlSeconds,
-	});
+  const store = new TelegramRedis(redisService, {
+    ttl: ttlSeconds,
+  });
 
-	return {
-		token: getTelegramToken(configService),
-		middlewares: [
-			rateLimitMiddleware.telegrafMiddleware,
-			sentryMiddleware.telegrafMiddleware,
-			session({ store }),
-		],
-	};
+  return {
+    token: getTelegramToken(configService),
+    middlewares: [rateLimitMiddleware.telegrafMiddleware, sentryMiddleware.telegrafMiddleware, session({ store })],
+  };
 };

@@ -1,3 +1,3 @@
 export enum SupportMedia {
-	Support = 'support.mp4',
+  Support = 'support.mp4',
 }

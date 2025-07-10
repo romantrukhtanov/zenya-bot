@@ -3,64 +3,64 @@ import { Currency, SubscriptionPlan } from '@prisma/__generated__';
 import type { PaidSubscriptionPlan } from './types';
 
 export const SUBSCRIPTION_PLAN_ORDER: SubscriptionPlan[] = [
-	SubscriptionPlan.FREE,
-	SubscriptionPlan.BASIC,
-	SubscriptionPlan.STANDARD,
-	SubscriptionPlan.PREMIUM,
+  SubscriptionPlan.FREE,
+  SubscriptionPlan.BASIC,
+  SubscriptionPlan.STANDARD,
+  SubscriptionPlan.PREMIUM,
 ] as const;
 
 export const SubscriptionPlanTitle: Record<SubscriptionPlan, string> = {
-	[SubscriptionPlan.FREE]: 'Free',
-	[SubscriptionPlan.BASIC]: 'Basic',
-	[SubscriptionPlan.STANDARD]: 'Standard',
-	[SubscriptionPlan.PREMIUM]: 'Premium',
+  [SubscriptionPlan.FREE]: 'Free',
+  [SubscriptionPlan.BASIC]: 'Basic',
+  [SubscriptionPlan.STANDARD]: 'Standard',
+  [SubscriptionPlan.PREMIUM]: 'Premium',
 };
 
 export const SubscriptionPlanButton: Record<PaidSubscriptionPlan, string> = {
-	[SubscriptionPlan.BASIC]: '✨ Basic',
-	[SubscriptionPlan.STANDARD]: '💎 Standard',
-	[SubscriptionPlan.PREMIUM]: '🚀 Premium',
+  [SubscriptionPlan.BASIC]: '✨ Basic',
+  [SubscriptionPlan.STANDARD]: '💎 Standard',
+  [SubscriptionPlan.PREMIUM]: '🚀 Premium',
 };
 
 export const SubscriptionUzsPrice: Record<PaidSubscriptionPlan, number> = {
-	[SubscriptionPlan.BASIC]: 74900,
-	[SubscriptionPlan.STANDARD]: 169000,
-	[SubscriptionPlan.PREMIUM]: 299000,
+  [SubscriptionPlan.BASIC]: 74900,
+  [SubscriptionPlan.STANDARD]: 169000,
+  [SubscriptionPlan.PREMIUM]: 299000,
 };
 
 export const SubscriptionStarsPrice: Record<PaidSubscriptionPlan, number> = {
-	[SubscriptionPlan.BASIC]: 500,
-	[SubscriptionPlan.STANDARD]: 1000,
-	[SubscriptionPlan.PREMIUM]: 2000,
+  [SubscriptionPlan.BASIC]: 500,
+  [SubscriptionPlan.STANDARD]: 1000,
+  [SubscriptionPlan.PREMIUM]: 2000,
 };
 
 export const SubscribePlanLabel: Record<PaidSubscriptionPlan, string> = {
-	[SubscriptionPlan.BASIC]: '✨ Базовая подписка',
-	[SubscriptionPlan.STANDARD]: '💎 Стандартная подписка',
-	[SubscriptionPlan.PREMIUM]: '🚀 Премиум подписка',
+  [SubscriptionPlan.BASIC]: '✨ Базовая подписка',
+  [SubscriptionPlan.STANDARD]: '💎 Стандартная подписка',
+  [SubscriptionPlan.PREMIUM]: '🚀 Премиум подписка',
 };
 
 export const PurchaseByLabel: Record<Currency, string> = {
-	[Currency.XTR]: '🌟 Подключить за STARS',
-	[Currency.UZS]: '💳 Подключить за USD / UZS',
-	[Currency.USD]: '💳 Подключить за USD / UZS',
+  [Currency.XTR]: '🌟 Подключить за STARS',
+  [Currency.UZS]: '💳 Подключить за USD / UZS',
+  [Currency.USD]: '💳 Подключить за USD / UZS',
 };
 
 export const UserReplicasAmount: Record<SubscriptionPlan, number> = {
-	[SubscriptionPlan.FREE]: 10,
-	[SubscriptionPlan.BASIC]: 1000,
-	[SubscriptionPlan.STANDARD]: 3000,
-	[SubscriptionPlan.PREMIUM]: 10000,
+  [SubscriptionPlan.FREE]: 10,
+  [SubscriptionPlan.BASIC]: 1000,
+  [SubscriptionPlan.STANDARD]: 3000,
+  [SubscriptionPlan.PREMIUM]: 10000,
 } as const;
 
 export const CodeToPaidPlan: Record<string, PaidSubscriptionPlan> = {
-	BSC: SubscriptionPlan.BASIC,
-	STD: SubscriptionPlan.STANDARD,
-	PRM: SubscriptionPlan.PREMIUM,
+  BSC: SubscriptionPlan.BASIC,
+  STD: SubscriptionPlan.STANDARD,
+  PRM: SubscriptionPlan.PREMIUM,
 } as const;
 
 export const PaidPlanToCode: Record<PaidSubscriptionPlan, string> = {
-	BASIC: 'BSC',
-	STANDARD: 'STD',
-	PREMIUM: 'PRM',
+  BASIC: 'BSC',
+  STANDARD: 'STD',
+  PREMIUM: 'PRM',
 } as const;

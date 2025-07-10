@@ -17,24 +17,24 @@ import { RedisModule } from '@/redis/redis.module';
 import { TelegramModule } from '@/telegram/telegram.module';
 
 @Module({
-	controllers: [HealthController],
-	imports: [
-		ConfigModule.forRoot({ isGlobal: true }),
-		QueueModule.forRoot({ isGlobal: true }),
-		ServeStaticModule.forRootAsync({
-			imports: [ConfigModule],
-			inject: [ConfigService],
-			useFactory: serveStaticOptionsFactory,
-		}),
-		SentryModule,
-		PrismaModule,
-		PaymentModule,
-		RedisModule,
-		UserModule,
-		TelegramModule,
-		SubscriptionModule,
-		BroadcastModule,
-		AgentModule,
-	],
+  controllers: [HealthController],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    QueueModule.forRoot({ isGlobal: true }),
+    ServeStaticModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: serveStaticOptionsFactory,
+    }),
+    SentryModule,
+    PrismaModule,
+    PaymentModule,
+    RedisModule,
+    UserModule,
+    TelegramModule,
+    SubscriptionModule,
+    BroadcastModule,
+    AgentModule,
+  ],
 })
 export class AppModule {}

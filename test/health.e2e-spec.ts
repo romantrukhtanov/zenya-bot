@@ -4,22 +4,22 @@ import { Test } from '@nestjs/testing';
 import { HealthController } from '@/controllets/health.controller';
 
 describe('HealthController', () => {
-	let controller: HealthController;
+  let controller: HealthController;
 
-	beforeAll(async () => {
-		const module: TestingModule = await Test.createTestingModule({
-			controllers: [HealthController],
-			providers: [],
-		}).compile();
+  beforeAll(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [HealthController],
+      providers: [],
+    }).compile();
 
-		controller = module.get<HealthController>(HealthController);
-	});
+    controller = module.get<HealthController>(HealthController);
+  });
 
-	it('should be defined', () => {
-		expect(controller).toBeDefined();
-	});
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
 
-	it('GET /health should return { status: "ok" }', () => {
-		expect(controller.check()).toEqual({ status: 'ok' });
-	});
+  it('GET /health should return { status: "ok" }', () => {
+    expect(controller.check()).toEqual({ status: 'ok' });
+  });
 });

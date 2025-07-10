@@ -18,106 +18,96 @@ import { translations } from '@/translations';
 
 @Wizard(BotScene.Account)
 export class AccountWizard extends BaseWizardScene<AccountWizardContext> {
-	constructor(
-		private readonly userService: UserService,
-		private readonly subscriptionService: SubscriptionService,
-		protected readonly mediaService: MediaService,
-		protected readonly mainMenuService: MainMenuService,
-	) {
-		super(mainMenuService, mediaService);
-	}
+  constructor(
+    private readonly userService: UserService,
+    private readonly subscriptionService: SubscriptionService,
+    protected readonly mediaService: MediaService,
+    protected readonly mainMenuService: MainMenuService,
+  ) {
+    super(mainMenuService, mediaService);
+  }
 
-	@WizardStep(1)
-	async start(@Ctx() ctx: AccountWizardContext) {
-		const telegramUser = getTelegramUser(ctx);
+  @WizardStep(1)
+  async start(@Ctx() ctx: AccountWizardContext) {
+    const telegramUser = getTelegramUser(ctx);
 
-		if (!telegramUser) {
-			return;
-		}
+    if (!telegramUser) {
+      return;
+    }
 
-		const user = await this.userService.findUserByTelegramId(telegramUser.id);
+    const user = await this.userService.findUserByTelegramId(telegramUser.id);
 
-		if (!user) {
-			return;
-		}
+    if (!user) {
+      return;
+    }
 
-		const activeSubscription = await this.subscriptionService.getActiveSubscription(user.id);
+    const activeSubscription = await this.subscriptionService.getActiveSubscription(user.id);
 
-		const caption = getUserInfo(user, activeSubscription);
-		const isAdmin = isUserAdmin(user.role);
+    const caption = getUserInfo(user, activeSubscription);
+    const isAdmin = isUserAdmin(user.role);
 
-		const buttons = [
-			Markup.button.callback(
-				translations.scenes.account.changeNameButton,
-				AccountCallback.ChangeName,
-			),
-		];
+    const buttons = [Markup.button.callback(translations.scenes.account.changeNameButton, AccountCallback.ChangeName)];
 
-		const shouldShowSubscribeButton =
-			!activeSubscription || activeSubscription.plan === SubscriptionPlan.FREE;
+    const shouldShowSubscribeButton = !activeSubscription || activeSubscription.plan === SubscriptionPlan.FREE;
 
-		if (shouldShowSubscribeButton && !isAdmin) {
-			buttons.push(this.subscriptionButton);
-		}
+    if (shouldShowSubscribeButton && !isAdmin) {
+      buttons.push(this.subscriptionButton);
+    }
 
-		buttons.push(this.homeButton);
+    buttons.push(this.homeButton);
 
-		await this.mediaService.sendVideo(ctx, AccountMedia.Hello, {
-			caption,
-			inlineKeyboard: Markup.inlineKeyboard(buttons, { columns: 1 }),
-			parseMode: 'HTML',
-		});
-	}
+    await this.mediaService.sendVideo(ctx, AccountMedia.Hello, {
+      caption,
+      inlineKeyboard: Markup.inlineKeyboard(buttons, { columns: 1 }),
+      parseMode: 'HTML',
+    });
+  }
 
-	@Action(AccountCallback.ChangeName)
-	async onChangeName(@Ctx() ctx: AccountWizardContext) {
-		await ctx.answerCbQuery();
-		ctx.wizard.state.isChangingName = true;
+  @Action(AccountCallback.ChangeName)
+  async onChangeName(@Ctx() ctx: AccountWizardContext) {
+    await ctx.answerCbQuery();
+    ctx.wizard.state.isChangingName = true;
 
-		await this.mediaService.sendText(ctx, translations.scenes.account.changeNameIntro);
-	}
+    await this.mediaService.sendText(ctx, translations.scenes.account.changeNameIntro);
+  }
 
-	@On('text')
-	async onText(@Ctx() ctx: AccountWizardContext, @Next() next: () => Promise<void>) {
-		const telegramUser = getTelegramUser(ctx);
+  @On('text')
+  async onText(@Ctx() ctx: AccountWizardContext, @Next() next: () => Promise<void>) {
+    const telegramUser = getTelegramUser(ctx);
 
-		if (!telegramUser) {
-			return;
-		}
+    if (!telegramUser) {
+      return;
+    }
 
-		if (!ctx.wizard.state.isChangingName) {
-			return next();
-		}
+    if (!ctx.wizard.state.isChangingName) {
+      return next();
+    }
 
-		const message = ctx.message as Message.TextMessage;
-		const nameText = message.text.trim();
+    const message = ctx.message as Message.TextMessage;
+    const nameText = message.text.trim();
 
-		if (nameText.startsWith('/')) {
-			return next();
-		}
+    if (nameText.startsWith('/')) {
+      return next();
+    }
 
-		if (!nameText) {
-			await this.mediaService.sendText(ctx, 'Имя не может быть пустым. Попробуйте еще раз.');
-			return;
-		}
+    if (!nameText) {
+      await this.mediaService.sendText(ctx, 'Имя не может быть пустым. Попробуйте еще раз.');
+      return;
+    }
 
-		await this.userService.updateUser(telegramUser.id, { name: nameText });
+    await this.userService.updateUser(telegramUser.id, { name: nameText });
 
-		await this.mediaService.sendText(
-			ctx,
-			`${translations.scenes.account.changeNameSuccess} *${nameText}*`,
-			{
-				parseMode: 'MarkdownV2',
-			},
-		);
+    await this.mediaService.sendText(ctx, `${translations.scenes.account.changeNameSuccess} *${nameText}*`, {
+      parseMode: 'MarkdownV2',
+    });
 
-		ctx.wizard.state.isChangingName = false;
+    ctx.wizard.state.isChangingName = false;
 
-		await this.start(ctx);
-	}
+    await this.start(ctx);
+  }
 
-	@Action(BaseCallback.Subscribe)
-	async onSubscribe(ctx: AccountWizardContext) {
-		await this.navigateTo(ctx, BotScene.Subscription);
-	}
+  @Action(BaseCallback.Subscribe)
+  async onSubscribe(ctx: AccountWizardContext) {
+    await this.navigateTo(ctx, BotScene.Subscription);
+  }
 }

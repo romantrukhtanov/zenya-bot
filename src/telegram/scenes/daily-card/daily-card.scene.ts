@@ -18,121 +18,113 @@ export type Buttons = ReturnType<typeof Markup.button.callback>[];
 
 @Wizard(BotScene.DailyCard)
 export class DailyCardWizard extends BaseWizardScene<DailyCardWizardContext> {
-	constructor(
-		private readonly metaCardService: MetaCardService,
-		private readonly userService: UserService,
-		protected readonly mediaService: MediaService,
-		protected readonly mainMenuService: MainMenuService,
-	) {
-		super(mainMenuService, mediaService);
-	}
+  constructor(
+    private readonly metaCardService: MetaCardService,
+    private readonly userService: UserService,
+    protected readonly mediaService: MediaService,
+    protected readonly mainMenuService: MainMenuService,
+  ) {
+    super(mainMenuService, mediaService);
+  }
 
-	@WizardStep(0)
-	async start(@Ctx() ctx: DailyCardWizardContext) {
-		const telegramUser = getTelegramUser(ctx);
+  @WizardStep(0)
+  async start(@Ctx() ctx: DailyCardWizardContext) {
+    const telegramUser = getTelegramUser(ctx);
 
-		if (!telegramUser) {
-			return;
-		}
+    if (!telegramUser) {
+      return;
+    }
 
-		let caption: string = translations.scenes.dailyCard.intro;
+    let caption: string = translations.scenes.dailyCard.intro;
 
-		const [userId, activePlan, role] = await Promise.all([
-			this.userService.getUserIdByTelegramId(telegramUser.id),
-			this.userService.getActiveUserPlan(telegramUser.id),
-			this.userService.getUserRole(telegramUser.id),
-		]);
+    const [userId, activePlan, role] = await Promise.all([
+      this.userService.getUserIdByTelegramId(telegramUser.id),
+      this.userService.getActiveUserPlan(telegramUser.id),
+      this.userService.getUserRole(telegramUser.id),
+    ]);
 
-		const [hasAnyHistory, hasGivenToday, timeUntilNextDailyCard] = await Promise.all([
-			this.metaCardService.hasAnyHistory(userId),
-			this.metaCardService.hasGivenToday(userId),
-			this.metaCardService.getTimeUntilNextDailyCard(userId),
-		]);
+    const [hasAnyHistory, hasGivenToday, timeUntilNextDailyCard] = await Promise.all([
+      this.metaCardService.hasAnyHistory(userId),
+      this.metaCardService.hasGivenToday(userId),
+      this.metaCardService.getTimeUntilNextDailyCard(userId),
+    ]);
 
-		const humanTime = formatSecondsToHumanTime(timeUntilNextDailyCard);
+    const humanTime = formatSecondsToHumanTime(timeUntilNextDailyCard);
 
-		if (hasGivenToday) {
-			caption = translations.scenes.dailyCard.givenToday(humanTime);
-		}
+    if (hasGivenToday) {
+      caption = translations.scenes.dailyCard.givenToday(humanTime);
+    }
 
-		const shouldSubscribe =
-			!isPlanSufficient(activePlan, SubscriptionPlan.BASIC, role) &&
-			hasAnyHistory &&
-			!hasGivenToday;
+    const shouldSubscribe = !isPlanSufficient(activePlan, SubscriptionPlan.BASIC, role) && hasAnyHistory && !hasGivenToday;
 
-		if (shouldSubscribe) {
-			caption = translations.scenes.dailyCard.shouldSubscribe;
-		}
+    if (shouldSubscribe) {
+      caption = translations.scenes.dailyCard.shouldSubscribe;
+    }
 
-		const inlineKeyboard = Markup.inlineKeyboard(this.getSceneButtons(shouldSubscribe), {
-			columns: 1,
-		});
+    const inlineKeyboard = Markup.inlineKeyboard(this.getSceneButtons(shouldSubscribe), {
+      columns: 1,
+    });
 
-		await this.mediaService.sendVideo(ctx, DailyCardMedia.MetaCards, {
-			caption,
-			inlineKeyboard,
-			parseMode: 'MarkdownV2',
-		});
-	}
+    await this.mediaService.sendVideo(ctx, DailyCardMedia.MetaCards, {
+      caption,
+      inlineKeyboard,
+      parseMode: 'MarkdownV2',
+    });
+  }
 
-	@Action(DailyCardCallback.ShowDailyCard)
-	async onShowDailyCard(@Ctx() ctx: DailyCardWizardContext) {
-		await ctx.answerCbQuery();
+  @Action(DailyCardCallback.ShowDailyCard)
+  async onShowDailyCard(@Ctx() ctx: DailyCardWizardContext) {
+    await ctx.answerCbQuery();
 
-		const telegramUser = getTelegramUser(ctx);
+    const telegramUser = getTelegramUser(ctx);
 
-		if (!telegramUser) {
-			return;
-		}
+    if (!telegramUser) {
+      return;
+    }
 
-		const userId = await this.userService.getUserIdByTelegramId(telegramUser.id);
+    const userId = await this.userService.getUserIdByTelegramId(telegramUser.id);
 
-		const card = await this.metaCardService.drawDailyCard(userId);
+    const card = await this.metaCardService.drawDailyCard(userId);
 
-		if (!card) {
-			await this.sendOrEdit(ctx, translations.scenes.dailyCard.unavailableCard, [this.homeButton]);
-			return;
-		}
+    if (!card) {
+      await this.sendOrEdit(ctx, translations.scenes.dailyCard.unavailableCard, [this.homeButton]);
+      return;
+    }
 
-		const inlineKeyboard = Markup.inlineKeyboard([this.homeButton]);
+    const inlineKeyboard = Markup.inlineKeyboard([this.homeButton]);
 
-		const hasQuestions = card.questions && card.questions.length > 0;
+    const hasQuestions = card.questions && card.questions.length > 0;
 
-		await this.mediaService.sendPhoto(ctx, card.media.filePath, {
-			inlineKeyboard: hasQuestions ? undefined : inlineKeyboard,
-		});
+    await this.mediaService.sendPhoto(ctx, card.media.filePath, {
+      inlineKeyboard: hasQuestions ? undefined : inlineKeyboard,
+    });
 
-		if (card.questions && card.questions.length > 0) {
-			const questions = card.questions.join('\n\n');
+    if (card.questions && card.questions.length > 0) {
+      const questions = card.questions.join('\n\n');
 
-			await this.mediaService.sendText(ctx, questions, {
-				parseMode: 'MarkdownV2',
-				inlineKeyboard,
-			});
-		}
-	}
+      await this.mediaService.sendText(ctx, questions, {
+        parseMode: 'MarkdownV2',
+        inlineKeyboard,
+      });
+    }
+  }
 
-	private getSceneButtons(shouldSubscribe?: boolean) {
-		const buttons: Buttons = [];
+  private getSceneButtons(shouldSubscribe?: boolean) {
+    const buttons: Buttons = [];
 
-		if (shouldSubscribe) {
-			buttons.push(this.subscriptionButton);
-		} else {
-			buttons.push(
-				Markup.button.callback(
-					translations.scenes.dailyCard.cardButton,
-					DailyCardCallback.ShowDailyCard,
-				),
-			);
-		}
+    if (shouldSubscribe) {
+      buttons.push(this.subscriptionButton);
+    } else {
+      buttons.push(Markup.button.callback(translations.scenes.dailyCard.cardButton, DailyCardCallback.ShowDailyCard));
+    }
 
-		buttons.push(this.homeButton);
+    buttons.push(this.homeButton);
 
-		return buttons;
-	}
+    return buttons;
+  }
 
-	@Action(BaseCallback.Subscribe)
-	async onSubscribe(ctx: DailyCardWizardContext) {
-		await this.navigateTo(ctx, BotScene.Subscription);
-	}
+  @Action(BaseCallback.Subscribe)
+  async onSubscribe(ctx: DailyCardWizardContext) {
+    await this.navigateTo(ctx, BotScene.Subscription);
+  }
 }

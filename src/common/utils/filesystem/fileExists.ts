@@ -6,11 +6,11 @@ import { join } from 'path';
  * Пример: await fileExists('uploads/video/hello.mp4')
  */
 export const fileExists = async (relativePath: string): Promise<boolean> => {
-	const fullPath = join(process.cwd(), relativePath);
-	try {
-		await fs.access(fullPath);
-		return true;
-	} catch {
-		return false;
-	}
+  const fullPath = join(process.cwd(), relativePath);
+  try {
+    await fs.access(fullPath);
+    return true;
+  } catch {
+    return false;
+  }
 };

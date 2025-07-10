@@ -7,5 +7,5 @@ import emojiRegex from 'emoji-regex';
  * @returns строка без эмодзи
  */
 export function removeEmojis(text: string): string {
-	return text.replace(emojiRegex(), '');
+  return text.replace(emojiRegex(), '');
 }

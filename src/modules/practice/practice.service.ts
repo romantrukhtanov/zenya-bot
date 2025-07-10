@@ -7,52 +7,45 @@ import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()
 export class PracticeService {
-	constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-	async createPractice(createPracticeDto: CreatePracticeDto): Promise<Practice> {
-		const { title, content, categoryId } = createPracticeDto;
-		return this.prisma.practice.create({
-			data: {
-				title,
-				content,
-				categoryId,
-			},
-		});
-	}
+  async createPractice(createPracticeDto: CreatePracticeDto): Promise<Practice> {
+    const { title, content, categoryId } = createPracticeDto;
+    return this.prisma.practice.create({
+      data: {
+        title,
+        content,
+        categoryId,
+      },
+    });
+  }
 
-	async updatePractice(
-		practiceId: string,
-		updatePracticeDto: UpdatePracticeDto,
-	): Promise<Practice> {
-		return this.prisma.practice.update({
-			where: { id: practiceId },
-			data: updatePracticeDto,
-		});
-	}
+  async updatePractice(practiceId: string, updatePracticeDto: UpdatePracticeDto): Promise<Practice> {
+    return this.prisma.practice.update({
+      where: { id: practiceId },
+      data: updatePracticeDto,
+    });
+  }
 
-	async findAllPractices(): Promise<Practice[]> {
-		return this.prisma.practice.findMany();
-	}
+  async findAllPractices(): Promise<Practice[]> {
+    return this.prisma.practice.findMany();
+  }
 
-	async findPracticeById(practiceId: string): Promise<Practice | null> {
-		return this.prisma.practice.findUnique({
-			where: { id: practiceId },
-		});
-	}
+  async findPracticeById(practiceId: string): Promise<Practice | null> {
+    return this.prisma.practice.findUnique({
+      where: { id: practiceId },
+    });
+  }
 
-	async findPracticesByCategoryId(
-		categoryId: string,
-		checkPublished?: boolean,
-	): Promise<Practice[]> {
-		const publishedFilter =
-			typeof checkPublished !== 'undefined' ? { isPublished: checkPublished } : {};
+  async findPracticesByCategoryId(categoryId: string, checkPublished?: boolean): Promise<Practice[]> {
+    const publishedFilter = typeof checkPublished !== 'undefined' ? { isPublished: checkPublished } : {};
 
-		return this.prisma.practice.findMany({
-			where: {
-				categoryId,
-				...publishedFilter,
-			},
-			orderBy: { order: 'asc' },
-		});
-	}
+    return this.prisma.practice.findMany({
+      where: {
+        categoryId,
+        ...publishedFilter,
+      },
+      orderBy: { order: 'asc' },
+    });
+  }
 }
