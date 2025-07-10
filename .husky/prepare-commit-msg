@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+# Each time you commit, it extracts the task identifier or user-story identifier from the current branch name and prefixes your commit message with the extracted identifier.
+npx prefix-commit-message $1 -o [ -c ]
