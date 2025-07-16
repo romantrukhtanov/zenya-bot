@@ -3,6 +3,7 @@ import { Role } from '@prisma/__generated__';
 import { type Context, Markup } from 'telegraf';
 
 import { MediaService } from '@/common/services/media';
+import { CHANNEL_LINK } from '@/env';
 import { UserService } from '@/modules/user';
 import { BotSceneCallback } from '@/telegram/constants';
 import { translations } from '@/translations';
@@ -61,6 +62,12 @@ export class MainMenuService {
 
     const markupButtons = filteredButtons.map(button => Markup.button.callback(button.text, button.callback_data));
 
-    return Markup.inlineKeyboard(markupButtons, { columns: 1 });
+    const menuButtons = [...markupButtons, this.channelLinkButton];
+
+    return Markup.inlineKeyboard(menuButtons, { columns: 1 });
+  }
+
+  get channelLinkButton() {
+    return Markup.button.url(translations.shared.chanel, CHANNEL_LINK);
   }
 }
