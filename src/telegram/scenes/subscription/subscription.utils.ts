@@ -3,11 +3,11 @@ import { Currency, PaymentProvider } from '@prisma/__generated__';
 import { InjectBot } from 'nestjs-telegraf';
 import { Markup, Telegraf } from 'telegraf';
 
-import { isCurrencyUsdUzs } from './helpers';
+import { getProviderToken, isCurrencyUsdUzs } from './helpers';
 
 import { SubscribePlanLabel, SubscriptionStarsPrice, SubscriptionUzsPrice } from '@/common/constants';
 import { PaidSubscriptionPlan } from '@/common/types';
-import { PAYMENT_PROVIDER_TOKEN, TELEGRAM_ICON } from '@/env';
+import { TELEGRAM_ICON } from '@/env';
 import { PaymentService } from '@/modules/payment';
 import { SubscriptionCallback } from '@/telegram/scenes';
 import { translations } from '@/translations';
@@ -19,16 +19,14 @@ export class SubscriptionSceneUtils {
     @InjectBot() private readonly bot: Telegraf,
   ) {}
 
-  async issue(userId: string, chatId: number, plan: PaidSubscriptionPlan, currency: Currency) {
+  async issue(userId: string, chatId: number, plan: PaidSubscriptionPlan, currency: Currency, provider: PaymentProvider) {
     const isUsdUzs = isCurrencyUsdUzs(currency);
 
     const amount = isUsdUzs
       ? SubscriptionUzsPrice[plan] * 100 // копейки
       : SubscriptionStarsPrice[plan]; // звёзды
 
-    const provider = isUsdUzs ? PaymentProvider.FREEDOMPAY : PaymentProvider.STARS;
-
-    const providerToken = isUsdUzs ? PAYMENT_PROVIDER_TOKEN : '';
+    const providerToken = getProviderToken(provider);
 
     const orderId = this.paymentService.makeOrderId(plan, chatId);
 

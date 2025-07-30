@@ -1,13 +1,13 @@
 import type { Subscription, User } from '@prisma/__generated__';
-import { Currency, SubscriptionPlan } from '@prisma/__generated__';
+import { Currency, PaymentProvider, SubscriptionPlan } from '@prisma/__generated__';
 import { format } from 'date-fns';
 import { Markup } from 'telegraf';
 
 import { PurchaseMethod, SubscriptionCallback } from './constants';
 
-import { PurchaseByLabel, SubscriptionPlanTitle } from '@/common/constants';
+import { PurchaseText, SubscriptionPlanTitle } from '@/common/constants';
 import { exhaustiveCheck, isUserAdmin, removeEmojis } from '@/common/utils';
-import { PAYMENT_PROVIDER_TOKEN } from '@/env';
+import { FREEDOMPAY_PROVIDER_TOKEN, PAYME_PROVIDER_TOKEN } from '@/env';
 import { translations } from '@/translations';
 
 const INFINITE_SYMBOL = '∞';
@@ -72,23 +72,56 @@ export const isCurrencyUsdUzs = (currency: Currency) => {
   return currency === Currency.USD || currency === Currency.UZS;
 };
 
+export const getProviderToken = (provider: PaymentProvider) => {
+  switch (provider) {
+    case PaymentProvider.STARS:
+      return '';
+    case PaymentProvider.PAYME:
+      return PAYME_PROVIDER_TOKEN;
+    case PaymentProvider.FREEDOMPAY:
+      return FREEDOMPAY_PROVIDER_TOKEN;
+    default:
+      return '';
+  }
+};
+
 export const getPurchaseCurrency = (purchaseMethod: PurchaseMethod): Currency => {
   switch (purchaseMethod) {
     case PurchaseMethod.PayStars:
       return Currency.XTR;
-    case PurchaseMethod.PayUsdUzs:
+    case PurchaseMethod.PayPayme:
+    case PurchaseMethod.PayFreedompay:
       return Currency.UZS;
     default:
       exhaustiveCheck(purchaseMethod);
   }
 };
 
-export const getPaymentButtons = () => {
-  const tgStarsButton = Markup.button.callback(PurchaseByLabel.XTR, PurchaseMethod.PayStars);
+export const getPaymentProvider = (purchaseMethod: PurchaseMethod): PaymentProvider => {
+  switch (purchaseMethod) {
+    case PurchaseMethod.PayStars:
+      return PaymentProvider.STARS;
+    case PurchaseMethod.PayPayme:
+      return PaymentProvider.PAYME;
+    case PurchaseMethod.PayFreedompay:
+      return PaymentProvider.FREEDOMPAY;
+    default:
+      exhaustiveCheck(purchaseMethod);
+  }
+};
 
-  if (!PAYMENT_PROVIDER_TOKEN) {
-    return [tgStarsButton, Markup.button.callback(`🔐 ${removeEmojis(PurchaseByLabel.UZS)}`, SubscriptionCallback.LockedPayment)];
+export const getPaymentButtons = () => {
+  const paymentButtons = [Markup.button.callback(PurchaseText.STARS, PurchaseMethod.PayStars)];
+
+  if (!PAYME_PROVIDER_TOKEN) {
+    paymentButtons.push(Markup.button.callback(`🔐 ${removeEmojis(PurchaseText.PAYME)}`, SubscriptionCallback.LockedPayment));
+  } else {
+    paymentButtons.push(Markup.button.callback(PurchaseText.PAYME, PurchaseMethod.PayPayme));
   }
 
-  return [tgStarsButton, Markup.button.callback(PurchaseByLabel.UZS, PurchaseMethod.PayUsdUzs)];
+  if (FREEDOMPAY_PROVIDER_TOKEN) {
+    paymentButtons.push(Markup.button.callback(PurchaseText.FREEDOMPAY, PurchaseMethod.PayFreedompay));
+  }
+
+  return paymentButtons;
 };
