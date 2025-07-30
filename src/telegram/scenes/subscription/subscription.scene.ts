@@ -16,7 +16,13 @@ import { SubscriptionService } from '@/modules/subscription';
 import { UserService } from '@/modules/user';
 import { BotScene } from '@/telegram/constants';
 import { BaseWizardScene } from '@/telegram/scenes/base';
-import { getPaymentButtons, getPurchaseCurrency, getWelcomeText, isCurrencyUsdUzs } from '@/telegram/scenes/subscription/helpers';
+import {
+  getPaymentButtons,
+  getPaymentProvider,
+  getPurchaseCurrency,
+  getWelcomeText,
+  isCurrencyUsdUzs,
+} from '@/telegram/scenes/subscription/helpers';
 import { getTelegramUser } from '@/telegram/utils';
 import { translations } from '@/translations';
 
@@ -155,12 +161,13 @@ export class SubscriptionWizard extends BaseWizardScene<SubscriptionWizardContex
     await this.mediaService.sendFile(ctx, SubscriptionMedia.PublicOffer);
   }
 
-  @Action([PurchaseMethod.PayUsdUzs, PurchaseMethod.PayStars])
+  @Action([PurchaseMethod.PayPayme, PurchaseMethod.PayFreedompay, PurchaseMethod.PayStars])
   async createInvoice(@Ctx() ctx: SubscriptionWizardContext) {
     await ctx.answerCbQuery();
 
     const callbackQuery = ctx.callbackQuery as CallbackQuery.DataQuery;
     const currency = getPurchaseCurrency(callbackQuery.data as PurchaseMethod);
+    const provider = getPaymentProvider(callbackQuery.data as PurchaseMethod);
 
     const telegramUser = getTelegramUser(ctx);
 
@@ -174,7 +181,7 @@ export class SubscriptionWizard extends BaseWizardScene<SubscriptionWizardContex
       return;
     }
 
-    const payload = await this.subscriptionSceneUtils.issue(userId, telegramUser.id, ctx.wizard.state.selectedPlan!, currency);
+    const payload = await this.subscriptionSceneUtils.issue(userId, telegramUser.id, ctx.wizard.state.selectedPlan!, currency, provider);
 
     ctx.wizard.state.orderId = payload.orderId;
     ctx.wizard.state.step = SubscriptionStep.WAIT_PAYMENT;

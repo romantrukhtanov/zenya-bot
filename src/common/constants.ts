@@ -1,4 +1,4 @@
-import { Currency, SubscriptionPlan } from '@prisma/__generated__';
+import { PaymentProvider, SubscriptionPlan } from '@prisma/__generated__';
 
 import type { PaidSubscriptionPlan } from './types';
 
@@ -40,11 +40,11 @@ export const SubscribePlanLabel: Record<PaidSubscriptionPlan, string> = {
   [SubscriptionPlan.PREMIUM]: '🚀 Премиум подписка',
 };
 
-export const PurchaseByLabel: Record<Currency, string> = {
-  [Currency.XTR]: '🌟 Подключить за STARS',
-  [Currency.UZS]: '💳 Подключить за USD / UZS',
-  [Currency.USD]: '💳 Подключить за USD / UZS',
-};
+export const PurchaseText: Record<PaymentProvider, string> = {
+  [PaymentProvider.STARS]: '🌟 Оплата за STARS',
+  [PaymentProvider.PAYME]: '💳 Оплата PAYME (UZS)',
+  [PaymentProvider.FREEDOMPAY]: '💳 Оплата FREEDOMPAY (UZS / USD)',
+} as const;
 
 export const UserReplicasAmount: Record<SubscriptionPlan, number> = {
   [SubscriptionPlan.FREE]: 10,

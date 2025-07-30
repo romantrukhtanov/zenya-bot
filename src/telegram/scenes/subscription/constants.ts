@@ -15,7 +15,8 @@ export enum SubscriptionCallback {
 }
 
 export enum PurchaseMethod {
-  PayUsdUzs = 'pay:usd:uzs',
+  PayPayme = 'pay:payme',
+  PayFreedompay = 'pay:freedompay',
   PayStars = 'pay:stars',
 }
 

@@ -5,7 +5,9 @@ export const IS_PRODUCTION = ENVIRONMENT === 'production';
 export const SUPPORT_LINK = process.env.SUPPORT_LINK ?? 'https://t.me/zenya_support';
 export const CHANNEL_LINK = process.env.CHANNEL_LINK ?? 'https://t.me/zenya_channel';
 
-export const PAYMENT_PROVIDER_TOKEN = process.env.PAYMENT_PROVIDER_TOKEN ?? '';
+export const FREEDOMPAY_PROVIDER_TOKEN = process.env.FREEDOMPAY_PROVIDER_TOKEN ?? '';
+export const PAYME_PROVIDER_TOKEN = process.env.PAYME_PROVIDER_TOKEN ?? '';
+
 export const TELEGRAM_ICON = process.env.TELEGRAM_ICON ?? '';
 
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
