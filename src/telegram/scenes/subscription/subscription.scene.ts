@@ -11,6 +11,7 @@ import { SubscriptionPlanButton, SubscriptionStarsPrice, SubscriptionUzsPrice } 
 import { MainMenuService, MediaService } from '@/common/services';
 import type { PaidSubscriptionPlan } from '@/common/types';
 import { isUserAdmin } from '@/common/utils';
+import { PAYMENT_INSTRUCTION_LINK } from '@/env';
 import { PaymentService } from '@/modules/payment';
 import { SubscriptionService } from '@/modules/subscription';
 import { UserService } from '@/modules/user';
@@ -114,6 +115,7 @@ export class SubscriptionWizard extends BaseWizardScene<SubscriptionWizardContex
 
     const buttons = [
       ...paymentButtons,
+      this.paymentInstructionLink,
       this.publicOfferButton,
       Markup.button.callback(translations.shared.back, SubscriptionCallback.Back),
     ];
@@ -196,6 +198,10 @@ export class SubscriptionWizard extends BaseWizardScene<SubscriptionWizardContex
 
   get publicOfferButton() {
     return Markup.button.callback(translations.shared.publicOffer, SubscriptionCallback.PublicOffer);
+  }
+
+  get paymentInstructionLink() {
+    return Markup.button.url(translations.shared.paymentInstruction, PAYMENT_INSTRUCTION_LINK);
   }
 
   /* ------------------------------------------------------------------

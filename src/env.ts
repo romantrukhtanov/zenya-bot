@@ -8,6 +8,8 @@ export const CHANNEL_LINK = process.env.CHANNEL_LINK ?? 'https://t.me/zenya_chan
 export const FREEDOMPAY_PROVIDER_TOKEN = process.env.FREEDOMPAY_PROVIDER_TOKEN ?? '';
 export const PAYME_PROVIDER_TOKEN = process.env.PAYME_PROVIDER_TOKEN ?? '';
 
+export const PAYMENT_INSTRUCTION_LINK = process.env.PAYMENT_INSTRUCTION_LINK ?? '';
+
 export const TELEGRAM_ICON = process.env.TELEGRAM_ICON ?? '';
 
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
