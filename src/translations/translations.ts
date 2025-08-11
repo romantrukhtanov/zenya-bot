@@ -110,6 +110,7 @@ export const translations = {
       addFactsButton: '📝 Добавить факты',
       addCardButton: '🔮 Добавить мак',
       checkMediaButton: '🗂️ Проверка медиа',
+      grantSubscriptionButton: '🎁 Выдать подписку',
     },
   },
   adminScenes: {

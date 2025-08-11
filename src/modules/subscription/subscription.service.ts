@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Currency, Prisma, Subscription, SubscriptionPlan, SubscriptionStatus } from '@prisma/__generated__';
+import { Currency, Prisma, Role, Subscription, SubscriptionPlan, SubscriptionStatus } from '@prisma/__generated__';
 import { addHours, addMonths, isAfter, subDays } from 'date-fns';
 
 import { QUEUE_SUBSCRIPTIONS, QueueSubscriptionJob } from './constants';
 import { assertCurrency } from './utils';
 
 import { UserReplicasAmount } from '@/common/constants';
+import { Roles } from '@/common/decorators';
 import { BULL_KEY, REDIS_KEY } from '@/common/redis-key';
 import { MediaService } from '@/common/services';
 import { formatSecondsToHumanTime, getSecondsLeft } from '@/common/utils';
@@ -127,8 +128,16 @@ export class SubscriptionService {
   /**
    * Дать “полный доступ” на N часов (по умолчанию 24). Помечается как trial = true.
    */
-  async grantUnlimitedTrial(userId: string, hours = 24, plan = SubscriptionPlan.STANDARD, currency: Currency = Currency.UZS) {
+  @Roles(Role.ADMIN)
+  async grantUnlimitedTrial(
+    userId: string,
+    hours = 24,
+    plan: SubscriptionPlan = SubscriptionPlan.STANDARD,
+    currency: Currency = Currency.UZS,
+  ) {
     const endsAt = addHours(new Date(), hours);
+
+    await this.cancelAllActive(userId);
 
     await this.prismaService.subscription.create({
       data: {
@@ -143,6 +152,7 @@ export class SubscriptionService {
       },
     });
 
+    await this.userReplicas.updateReplicas(userId, UserReplicasAmount[plan]);
     await this.userService.updatePlan(userId, plan);
     await this.scheduleExpireJob(userId, endsAt);
     await this.scheduleNotifyBeforeExpireJob(userId, endsAt);
@@ -151,7 +161,8 @@ export class SubscriptionService {
   /**
    * Дать “полный доступ” по telegramId.
    */
-  async grantUnlimitedTrialByTelegramId(telegramId: bigint | number, hours = 24, plan = SubscriptionPlan.STANDARD) {
+  @Roles(Role.ADMIN)
+  async grantUnlimitedTrialByTelegramId(telegramId: bigint | number, hours = 24, plan: SubscriptionPlan = SubscriptionPlan.STANDARD) {
     const userId = await this.userService.getUserIdByTelegramId(telegramId);
     return this.grantUnlimitedTrial(userId, hours, plan);
   }

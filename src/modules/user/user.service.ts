@@ -50,6 +50,29 @@ export class UserService {
   }
 
   /**
+   * Находит пользователя по ключу.
+   */
+  async findUserByKey(key: string | number | bigint): Promise<User | null> {
+    const numericValue = Number(key);
+    const isNumeric = !isNaN(numericValue) && numericValue > 0;
+
+    const whereConditions: Array<Partial<User>> = [];
+
+    if (typeof key === 'string') {
+      whereConditions.push({ id: key }, { telegramProfile: key });
+    }
+
+    if (isNumeric) {
+      whereConditions.push({ telegramId: BigInt(numericValue) });
+    }
+
+    return this.prismaService.user.findFirst({
+      where: { OR: whereConditions },
+      include: { favorites: true },
+    });
+  }
+
+  /**
    * Находит пользователя по User ID.
    */
   async findUserByUserId(userId: string): Promise<User | null> {

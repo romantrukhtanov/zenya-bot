@@ -27,6 +27,7 @@ export enum AdminScene {
   AddCategory = 'ADD_CATEGORY',
   AddFacts = 'ADD_FACTS',
   CheckMedia = 'CHECK_MEDIA',
+  GrantSubscription = 'GRANT_SUBSCRIPTION',
 }
 
 export enum BotSceneCallback {
