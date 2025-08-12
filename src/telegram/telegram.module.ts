@@ -8,6 +8,7 @@ import {
   AddFactsWizard,
   AddMetaCardWizard,
   AddPracticeWizard,
+  AdminBroadcastWizard,
   AdminWizard,
   ChatWizard,
   CheckMediaWizard,
@@ -34,7 +35,15 @@ import { PracticeModule } from '@/modules/practice';
 import { RedisModule } from '@/redis/redis.module';
 import { RedisService } from '@/redis/redis.service';
 
-const ADMIN_SCENES = [AddCategoryWizard, AddPracticeWizard, AddFactsWizard, AddMetaCardWizard, CheckMediaWizard, GrantSubscriptionWizard];
+const ADMIN_SCENES = [
+  AddCategoryWizard,
+  AddPracticeWizard,
+  AddFactsWizard,
+  AddMetaCardWizard,
+  CheckMediaWizard,
+  GrantSubscriptionWizard,
+  AdminBroadcastWizard,
+];
 
 const TELEGRAM_SCENES = [
   ...ADMIN_SCENES,

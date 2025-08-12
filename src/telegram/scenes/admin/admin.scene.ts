@@ -30,6 +30,7 @@ export class AdminWizard extends BaseWizardScene<AdminWizardContext> {
       Markup.button.callback(translations.scenes.admin.addCardButton, AdminSceneAction.ADD_META_CARD),
       Markup.button.callback(translations.scenes.admin.checkMediaButton, AdminSceneAction.CHECK_MEDIA),
       Markup.button.callback(translations.scenes.admin.grantSubscriptionButton, AdminSceneAction.GRANT_SUBSCRIPTION),
+      Markup.button.callback(translations.scenes.admin.broadcastButton, AdminSceneAction.BROADCAST),
       this.homeButton,
     ];
 
@@ -69,5 +70,10 @@ export class AdminWizard extends BaseWizardScene<AdminWizardContext> {
   @Action(AdminSceneAction.GRANT_SUBSCRIPTION)
   async onGrantSubscription(@Ctx() ctx: AdminWizardContext) {
     return this.navigateTo(ctx, AdminScene.GrantSubscription);
+  }
+
+  @Action(AdminSceneAction.BROADCAST)
+  async onBroadcast(@Ctx() ctx: AdminWizardContext) {
+    return this.navigateTo(ctx, AdminScene.Broadcast);
   }
 }

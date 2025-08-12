@@ -111,6 +111,7 @@ export const translations = {
       addCardButton: '🔮 Добавить мак',
       checkMediaButton: '🗂️ Проверка медиа',
       grantSubscriptionButton: '🎁 Выдать подписку',
+      broadcastButton: '📢 Массовая рассылка',
     },
   },
   adminScenes: {

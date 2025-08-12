@@ -41,6 +41,7 @@ export abstract class MediaUtils {
       reply_markup: extraOptions.reply_markup,
       protect_content: extraOptions.protect_content,
       parse_mode: extraOptions.parse_mode,
+      entities: extraOptions.entities,
     };
 
     if (typeof ctx === 'number') {

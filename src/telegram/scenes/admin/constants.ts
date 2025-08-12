@@ -5,4 +5,5 @@ export enum AdminSceneAction {
   ADD_META_CARD = 'admin:add:meta:card',
   CHECK_MEDIA = 'admin:check:media',
   GRANT_SUBSCRIPTION = 'admin:grant:subscription',
+  BROADCAST = 'admin:broadcast',
 }

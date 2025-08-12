@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
 
+import { BroadcastPayload } from './broadcast.interfaces';
 import { QUEUE_BROADCAST, QUEUE_BROADCAST_JOB } from './constant';
 
 import { QueueService } from '@/modules/queue';
-
-interface BroadcastPayload {
-  text: string;
-}
 
 @Injectable()
 export class BroadcastService {
