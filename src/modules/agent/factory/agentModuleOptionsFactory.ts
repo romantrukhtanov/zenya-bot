@@ -9,7 +9,7 @@ export const agentModuleOptionsFactory = (config: ConfigService) => {
     throw new Error('OPENAI_API_KEY не задан в .env');
   }
 
-  const maxTokens = Number(config.get<number>('OPENAI_MAX_COMPLETION') ?? 500);
+  const maxTokens = Number(config.get<number>('OPENAI_MAX_COMPLETION') ?? 300);
 
   const model = config.get<string>('OPENAI_MODEL');
 
