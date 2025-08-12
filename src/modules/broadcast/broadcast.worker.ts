@@ -5,13 +5,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { TelegramError } from 'telegraf';
 
+import { BroadcastPayload } from './broadcast.interfaces';
 import { QUEUE_BROADCAST } from './constant';
 
 import { MediaService } from '@/common/services';
 
 interface BroadcastJobData {
   ids: number[];
-  payload: { text: string };
+  payload: BroadcastPayload;
 }
 
 @Processor(QUEUE_BROADCAST, {
@@ -38,17 +39,17 @@ export class BroadcastWorker extends WorkerHost {
     const { ids, payload } = job.data;
 
     for (const id of ids) {
-      await this.sendWithRetry(id, payload.text, job);
+      await this.sendWithRetry(id, payload, job);
     }
 
     this.logger.log(`End job ${job.id} ⏱ ${new Date().toISOString()}`);
     return { sent: ids.length };
   }
 
-  private async sendWithRetry(id: number, text: string, job: Job) {
+  private async sendWithRetry(id: number, message: BroadcastPayload, job: Job) {
     for (let attempt = 1; attempt <= BroadcastWorker.MAX_ATTEMPTS_PER_USER; attempt++) {
       try {
-        await this.mediaService.sendText(Number(id), text);
+        await this.mediaService.sendText(Number(id), message.text, { entities: message.entities });
         return;
       } catch (err: unknown) {
         if (err instanceof TelegramError) {
