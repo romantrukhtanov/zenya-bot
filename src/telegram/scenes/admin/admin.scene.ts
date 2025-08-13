@@ -7,7 +7,9 @@ import { AdminWizardContext } from './types';
 
 import { Roles } from '@/common/decorators';
 import { MainMenuService, MediaService } from '@/common/services';
+import { UserService } from '@/modules/user';
 import { AdminScene, BotScene } from '@/telegram/constants';
+import { getAdminStartText } from '@/telegram/scenes/admin/helpers';
 import { BaseWizardScene } from '@/telegram/scenes/base';
 import { translations } from '@/translations';
 
@@ -16,6 +18,7 @@ import { translations } from '@/translations';
 export class AdminWizard extends BaseWizardScene<AdminWizardContext> {
   constructor(
     protected readonly mainMenuService: MainMenuService,
+    protected readonly userService: UserService,
     protected readonly mediaService: MediaService,
   ) {
     super(mainMenuService, mediaService);
@@ -34,11 +37,18 @@ export class AdminWizard extends BaseWizardScene<AdminWizardContext> {
       this.homeButton,
     ];
 
+    const [usersCount, countByReplicas, countOnboarded] = await Promise.all([
+      this.userService.getUsersCount(),
+      this.userService.countUsersByReplicas(),
+      this.userService.countOnboardedUsers(),
+    ]);
+
     const keyboard = Markup.inlineKeyboard(buttons, { columns: 1 });
 
     await this.mediaService.sendVideo(ctx, 'admin.mp4', {
-      caption: translations.scenes.admin.intro,
+      caption: getAdminStartText({ usersCount, countByReplicas, countOnboarded }),
       inlineKeyboard: keyboard,
+      parseMode: 'MarkdownV2',
     });
   }
 
