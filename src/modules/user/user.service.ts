@@ -4,6 +4,7 @@ import { Role, SubscriptionPlan, User } from '@prisma/__generated__';
 import { CreateUserDto } from './dto';
 
 import { UserReplicasAmount } from '@/common/constants';
+import { Roles } from '@/common/decorators';
 import { REDIS_KEY } from '@/common/redis-key';
 import { secondsInDays, secondsInMinutes } from '@/common/utils';
 import { PrismaService } from '@/prisma/prisma.service';
@@ -16,6 +17,33 @@ export class UserService {
     private readonly prismaService: PrismaService,
     private readonly redisService: RedisService,
   ) {}
+
+  /**
+   * Админские методы,
+   */
+
+  @Roles(Role.ADMIN)
+  async getUsersCount(): Promise<number> {
+    return this.prismaService.user.count();
+  }
+
+  @Roles(Role.ADMIN)
+  async countUsersByReplicas(threshold = UserReplicasAmount.FREE): Promise<number> {
+    return this.prismaService.user.count({
+      where: {
+        replicas: {
+          not: threshold,
+        },
+      },
+    });
+  }
+
+  @Roles(Role.ADMIN)
+  async countOnboardedUsers(): Promise<number> {
+    return this.prismaService.user.count({
+      where: { hasOnboarded: true },
+    });
+  }
 
   /**
    * Регистрирует пользователя (или обновляет, если он уже существует),
@@ -48,7 +76,6 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return this.prismaService.user.findMany();
   }
-
   /**
    * Находит пользователя по ключу.
    */
