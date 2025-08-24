@@ -11,7 +11,7 @@ import { FREEDOMPAY_PROVIDER_TOKEN, PAYME_PROVIDER_TOKEN } from '@/env';
 import { translations } from '@/translations';
 
 const INFINITE_SYMBOL = '∞';
-const NONE_SYMBOL = '-';
+const NONE_SYMBOL = '–';
 
 export const getWelcomeText = (user: User, activeSubscription: Subscription | null) => {
   const isAdmin = isUserAdmin(user.role);
