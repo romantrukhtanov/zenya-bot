@@ -254,9 +254,4 @@ export class OnboardingWizard extends BaseWizardScene<OnboardingWizardContext> {
     await this.ensureSceneMedia(ctx, OnboardingMedia.Gift);
     await this.sendOrEdit(ctx, translations.scenes.onboarding.finish, [this.subscriptionButton, goToMainButton], 'MarkdownV2');
   }
-
-  @Action(BaseCallback.Subscribe)
-  async onSubscribe(ctx: OnboardingWizardContext) {
-    await this.navigateTo(ctx, BotScene.Subscription);
-  }
 }

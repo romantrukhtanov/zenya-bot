@@ -7,7 +7,8 @@ import { BaseWizardContext, Buttons } from './types';
 
 import { MainMenuService, MediaService } from '@/common/services';
 import { SUPPORT_LINK } from '@/env';
-import { AdminScene, BotScene, BotSceneCommand } from '@/telegram/constants';
+import { AdminScene, BotScene, BotSceneCallback, BotSceneCommand } from '@/telegram/constants';
+import { HANDOFF_KEY } from '@/telegram/telegram.composer';
 import { translations } from '@/translations';
 
 export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
@@ -80,7 +81,10 @@ export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
   protected async navigateTo(ctx: TCtx, scene: BotScene | AdminScene) {
     this.toggleSkipSceneLeave(ctx, true);
 
-    await ctx.answerCbQuery();
+    if (ctx.callbackQuery) {
+      await ctx.answerCbQuery();
+    }
+
     await this.onLeave(ctx);
     return ctx.scene.enter(scene);
   }
@@ -99,18 +103,24 @@ export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
   }
 
   get subscriptionButton() {
-    return Markup.button.callback(translations.shared.subscribeButton, BaseCallback.Subscribe);
+    return Markup.button.callback(translations.shared.subscribeButton, BotSceneCallback.Subscription);
   }
 
   get supportButton() {
-    return Markup.button.callback(translations.shared.support, BaseCallback.Support);
+    return Markup.button.callback(translations.shared.support, BotSceneCallback.Support);
   }
 
   @SceneLeave()
   async onSceneLeave(@Ctx() ctx: TCtx) {
-    if (ctx.wizard.state.skipSceneLeave) {
+    if (ctx.session[HANDOFF_KEY]) {
+      this.resetHandoffKey(ctx);
       return;
     }
+
+    if (ctx.wizard?.state?.skipSceneLeave) {
+      return;
+    }
+
     await this.mainMenuService.showMainMenu(ctx);
   }
 
@@ -123,16 +133,25 @@ export abstract class BaseWizardScene<TCtx extends BaseWizardContext> {
   @Action(BaseCallback.GoToMain)
   protected async onGoToMain(@Ctx() ctx: TCtx) {
     await ctx.answerCbQuery();
+    this.resetHandoffKey(ctx);
     return ctx.scene.leave();
   }
 
   @Command(BotSceneCommand.Leave)
   protected async onLeave(@Ctx() ctx: TCtx) {
+    this.resetHandoffKey(ctx);
     return ctx.scene.leave();
   }
 
   @Command(BotSceneCommand.Menu)
   protected async onMenu(@Ctx() ctx: TCtx) {
+    this.resetHandoffKey(ctx);
     return ctx.scene.leave();
+  }
+
+  private resetHandoffKey(ctx: TCtx) {
+    if (ctx.session[HANDOFF_KEY]) {
+      ctx.session[HANDOFF_KEY] = false;
+    }
   }
 }

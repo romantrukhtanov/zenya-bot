@@ -12,7 +12,7 @@ import { SubscriptionService } from '@/modules/subscription';
 import { UserService } from '@/modules/user';
 import { BotScene } from '@/telegram/constants';
 import { getUserInfo } from '@/telegram/scenes/account/helpers';
-import { BaseCallback, BaseWizardScene } from '@/telegram/scenes/base';
+import { BaseWizardScene } from '@/telegram/scenes/base';
 import { getTelegramUser } from '@/telegram/utils';
 import { translations } from '@/translations';
 
@@ -104,10 +104,5 @@ export class AccountWizard extends BaseWizardScene<AccountWizardContext> {
     ctx.wizard.state.isChangingName = false;
 
     await this.start(ctx);
-  }
-
-  @Action(BaseCallback.Subscribe)
-  async onSubscribe(ctx: AccountWizardContext) {
-    await this.navigateTo(ctx, BotScene.Subscription);
   }
 }

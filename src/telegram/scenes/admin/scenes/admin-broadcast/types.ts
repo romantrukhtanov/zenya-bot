@@ -1,10 +1,15 @@
 import type { Scenes } from 'telegraf';
 
-import type { BroadcastPayload } from '@/modules/broadcast';
+import type { BroadcastButtonType, BroadcastPayload } from '@/modules/broadcast';
 
 export type AdminBroadcastWizardState = {
   skipSceneLeave?: boolean;
   message?: BroadcastPayload;
+  currentButtonType?: BroadcastButtonType;
+  currentButtonText?: string;
+  mediaMessageId?: number;
+  mediaName?: string;
+  messageId?: number;
 };
 
 export interface AdminBroadcastWizardContext extends Scenes.WizardContext {

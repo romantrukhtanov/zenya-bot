@@ -42,6 +42,7 @@ export class MainMenuService {
       { text: translations.menu.practice, callback_data: BotSceneCallback.Practice },
       { text: translations.menu.dailyCard, callback_data: BotSceneCallback.DailyCard },
       { text: translations.menu.assistantChat, callback_data: BotSceneCallback.AssistantChat },
+      { text: translations.menu.consultation, callback_data: BotSceneCallback.Consultation },
       { text: translations.menu.subscribe, callback_data: BotSceneCallback.Subscription },
       { text: translations.menu.account, callback_data: BotSceneCallback.Account },
       { text: translations.menu.support, callback_data: BotSceneCallback.Support },
