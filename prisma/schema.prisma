@@ -27,12 +27,13 @@ model User {
   hasOnboarded Boolean    @default(false) @map("has_onboarded")
   favorites    Practice[] @relation("user_favorites") // Избранные практики пользователя (связь many-to-many)
 
-  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3) // Дата и время создания записи
-  updatedAt  DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3) // Дата и время последнего обновления
+  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz(3) // Дата и время создания записи
+  updatedAt     DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3) // Дата и время последнего обновления
   /// Для быстрого доступа к текущему плану
-  activePlan SubscriptionPlan @default(FREE) @map("active_plan")
+  activePlan    SubscriptionPlan @default(FREE) @map("active_plan")
   /// Оставшиеся реплики общения с Зеней
-  replicas   Int              @default(10)
+  replicas      Int              @default(10)
+  consultations Int              @default(0)
 
   /// История всех платных подписок
   subscriptions   Subscription[]

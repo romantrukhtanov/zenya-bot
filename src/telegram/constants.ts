@@ -7,6 +7,7 @@ export enum BotScene {
   Subscription = 'SUBSCRIPTION',
   Account = 'ACCOUNT',
   ZenyaChat = 'ZENYA_CHAT',
+  Consultation = 'CONSULTATION',
 }
 
 export enum BotSceneCommand {
@@ -14,6 +15,8 @@ export enum BotSceneCommand {
   Practices = 'practices',
   Mac = 'mac',
   Chat = 'chat',
+  Consultation = 'consultation',
+  Subscription = 'subscription',
   Subscribe = 'subscribe',
   Account = 'account',
   Support = 'support',
@@ -37,6 +40,7 @@ export enum BotSceneCallback {
   Support = 'support',
   Subscription = 'subscription',
   AssistantChat = 'assistant_chat',
+  Consultation = 'consultation',
   Account = 'account',
   AdminPanel = 'admin_panel',
 }

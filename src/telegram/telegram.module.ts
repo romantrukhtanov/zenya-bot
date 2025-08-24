@@ -12,6 +12,7 @@ import {
   AdminWizard,
   ChatWizard,
   CheckMediaWizard,
+  ConsultationWizard,
   DailyCardWizard,
   GrantSubscriptionWizard,
   OnboardingWizard,
@@ -34,6 +35,7 @@ import { MetaCardModule } from '@/modules/meta-card';
 import { PracticeModule } from '@/modules/practice';
 import { RedisModule } from '@/redis/redis.module';
 import { RedisService } from '@/redis/redis.service';
+import { TelegramComposer } from '@/telegram/telegram.composer';
 
 const ADMIN_SCENES = [
   AddCategoryWizard,
@@ -55,6 +57,7 @@ const TELEGRAM_SCENES = [
   SubscriptionWizard,
   AccountWizard,
   ChatWizard,
+  ConsultationWizard,
 ] as const;
 
 @Module({
@@ -77,6 +80,7 @@ const TELEGRAM_SCENES = [
     MediaService,
     MainMenuService,
     TelegramUpdate,
+    TelegramComposer,
     ...TELEGRAM_SCENES,
   ],
 })

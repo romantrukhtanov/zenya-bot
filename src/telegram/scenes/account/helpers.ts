@@ -17,7 +17,8 @@ export const getUserInfo = (user: User, activeSubscription?: Subscription | null
     `${translations.scenes.account.name} <strong>${user.name ?? NONE_SYMBOL}</strong>`,
     `${translations.scenes.account.subscription} <strong>${SubscriptionPlanTitle[user.activePlan]}</strong>`,
     `${getExpirationDate(activeSubscription, isAdmin)}`,
-    `${translations.scenes.account.remainingReplies} <strong>${getRemainingReplies(user, isAdmin)}</strong>\n`,
+    `${translations.scenes.account.remainingReplies} <strong>${getRemainingReplies(user, isAdmin)}</strong>`,
+    `${translations.scenes.account.remainingConsultations} <strong>${getRemainingConsultations(user, isAdmin)}</strong>\n`,
     `${translations.scenes.account.id} <code>${user.telegramId}</code>`,
   ].filter(Boolean);
 
@@ -30,6 +31,13 @@ const getRemainingReplies = (user: User, isAdmin?: boolean) => {
   }
 
   return user.replicas || NONE_SYMBOL;
+};
+
+const getRemainingConsultations = (user: User, isAdmin?: boolean) => {
+  if (isAdmin) {
+    return INFINITE_SYMBOL;
+  }
+  return user.consultations || NONE_SYMBOL;
 };
 
 const getExpirationDate = (subscription?: Subscription | null, isAdmin?: boolean) => {

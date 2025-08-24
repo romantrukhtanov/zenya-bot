@@ -6,3 +6,4 @@ export * from './support';
 export * from './subscription';
 export * from './account';
 export * from './chat';
+export * from './consultation';

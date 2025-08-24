@@ -3,7 +3,7 @@ import { Role, SubscriptionPlan, User } from '@prisma/__generated__';
 
 import { CreateUserDto } from './dto';
 
-import { UserReplicasAmount } from '@/common/constants';
+import { UserConsultationsAmount, UserReplicasAmount } from '@/common/constants';
 import { Roles } from '@/common/decorators';
 import { REDIS_KEY } from '@/common/redis-key';
 import { secondsInDays, secondsInMinutes } from '@/common/utils';
@@ -65,6 +65,7 @@ export class UserService {
         role: createUserDto.role,
         activePlan: SubscriptionPlan.FREE,
         replicas: UserReplicasAmount.FREE,
+        consultations: UserConsultationsAmount.FREE,
       },
     });
 
@@ -164,24 +165,11 @@ export class UserService {
     await Promise.all([this.saveUserPlanToRedis(userId, plan), this.updateUserActivePlan(userId, plan)]);
   }
 
-  async updateReplicas(userId: string, replicas: number) {
+  async addConsultations(userId: string, amount: number) {
     return this.prismaService.user.update({
       where: { id: userId },
-      data: { replicas: replicas },
+      data: { consultations: { increment: amount } },
     });
-  }
-
-  async checkOnboarding(telegramId: bigint | number): Promise<boolean> {
-    const user = await this.prismaService.user.findUnique({
-      where: { telegramId },
-      select: { hasOnboarded: true },
-    });
-
-    if (!user) {
-      return false;
-    }
-
-    return user.hasOnboarded;
   }
 
   async getUserRole(telegramId: bigint | number): Promise<Role> {

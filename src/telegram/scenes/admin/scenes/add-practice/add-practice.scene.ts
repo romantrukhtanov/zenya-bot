@@ -3,7 +3,6 @@ import { Action, Ctx, On, Wizard, WizardStep } from 'nestjs-telegraf';
 import { Markup } from 'telegraf';
 import { Message } from 'telegraf/typings/core/types/typegram';
 
-import { SceneCommand } from './constants';
 import { TEXTS } from './texts';
 import { AddPracticeWizardContext } from './types';
 
@@ -12,7 +11,7 @@ import { MainMenuService, MediaService } from '@/common/services';
 import { CategoryService } from '@/modules/category';
 import { ChapterService } from '@/modules/chapter';
 import { CreatePracticeDto, PracticeService } from '@/modules/practice';
-import { AdminScene, BotScene } from '@/telegram/constants';
+import { AdminScene, BotSceneCallback } from '@/telegram/constants';
 import { BaseCallback, BaseWizardScene } from '@/telegram/scenes/base';
 
 @Roles(Role.ADMIN)
@@ -143,17 +142,8 @@ export class AddPracticeWizard extends BaseWizardScene<AddPracticeWizardContext>
     await ctx.reply(TEXTS.AFTER_CREATION, Markup.inlineKeyboard(buttons, { columns: 1 }));
   }
 
-  @Action(SceneCommand.GO_TO_ADMIN)
-  async onGoToAdmin(@Ctx() ctx: AddPracticeWizardContext) {
-    this.toggleSkipSceneLeave(ctx, true);
-
-    await ctx.answerCbQuery();
-    await ctx.scene.leave();
-    return ctx.scene.enter(BotScene.Admin);
-  }
-
   get goToAdminButton() {
-    return Markup.button.callback(TEXTS.GO_TO_ADMIN, SceneCommand.GO_TO_ADMIN);
+    return Markup.button.callback(TEXTS.GO_TO_ADMIN, BotSceneCallback.AdminPanel);
   }
 
   get sceneButtons() {

@@ -10,7 +10,7 @@ import { formatSecondsToHumanTime, isPlanSufficient } from '@/common/utils';
 import { MetaCardService } from '@/modules/meta-card';
 import { UserService } from '@/modules/user';
 import { BotScene } from '@/telegram/constants';
-import { BaseCallback, BaseWizardScene } from '@/telegram/scenes/base';
+import { BaseWizardScene } from '@/telegram/scenes/base';
 import { getTelegramUser } from '@/telegram/utils';
 import { translations } from '@/translations';
 
@@ -121,10 +121,5 @@ export class DailyCardWizard extends BaseWizardScene<DailyCardWizardContext> {
     buttons.push(this.homeButton);
 
     return buttons;
-  }
-
-  @Action(BaseCallback.Subscribe)
-  async onSubscribe(ctx: DailyCardWizardContext) {
-    await this.navigateTo(ctx, BotScene.Subscription);
   }
 }

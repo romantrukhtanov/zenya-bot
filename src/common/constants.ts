@@ -53,6 +53,13 @@ export const UserReplicasAmount: Record<SubscriptionPlan, number> = {
   [SubscriptionPlan.PREMIUM]: 10000,
 } as const;
 
+export const UserConsultationsAmount: Record<SubscriptionPlan, number> = {
+  [SubscriptionPlan.FREE]: 0,
+  [SubscriptionPlan.BASIC]: 1,
+  [SubscriptionPlan.STANDARD]: 1,
+  [SubscriptionPlan.PREMIUM]: 1,
+} as const;
+
 export const CodeToPaidPlan: Record<string, PaidSubscriptionPlan> = {
   BSC: SubscriptionPlan.BASIC,
   STD: SubscriptionPlan.STANDARD,

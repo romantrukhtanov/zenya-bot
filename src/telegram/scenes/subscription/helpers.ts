@@ -38,6 +38,7 @@ const getActiveSubscriptionText = (user: User, isAdmin: boolean, subscription: S
       `${translations.scenes.subscription.subscribed.info.currentPlan} *${SubscriptionPlanTitle[user.activePlan]}*`,
       `${getExpirationDate(user, subscription)}`,
       `${translations.scenes.account.remainingReplies} *${getRemainingReplies(user, isAdmin)}*`,
+      `${translations.scenes.account.remainingConsultations} *${getRemainingConsultations(user, isAdmin)}*`,
     ].join('\n'),
     translations.scenes.subscription.subscribed.end,
   ].filter(Boolean);
@@ -50,6 +51,13 @@ const getRemainingReplies = (user: User, isAdmin?: boolean) => {
     return INFINITE_SYMBOL;
   }
   return user.replicas || NONE_SYMBOL;
+};
+
+const getRemainingConsultations = (user: User, isAdmin?: boolean) => {
+  if (isAdmin) {
+    return INFINITE_SYMBOL;
+  }
+  return user.consultations || NONE_SYMBOL;
 };
 
 const getExpirationDate = (user: User, subscription?: Subscription | null) => {

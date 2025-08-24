@@ -5,7 +5,7 @@ import { addHours, addMonths, isAfter, subDays } from 'date-fns';
 import { QUEUE_SUBSCRIPTIONS, QueueSubscriptionJob } from './constants';
 import { assertCurrency } from './utils';
 
-import { UserReplicasAmount } from '@/common/constants';
+import { UserConsultationsAmount, UserReplicasAmount } from '@/common/constants';
 import { Roles } from '@/common/decorators';
 import { BULL_KEY, REDIS_KEY } from '@/common/redis-key';
 import { MediaService } from '@/common/services';
@@ -58,6 +58,7 @@ export class SubscriptionService {
         });
 
         await this.userReplicas.updateReplicas(userId, UserReplicasAmount[plan]);
+        await this.userService.addConsultations(userId, UserConsultationsAmount[plan]);
         await this.userService.updatePlan(userId, plan);
 
         return createdSubscription.id;

@@ -3,12 +3,13 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { TelegramError } from 'telegraf';
+import { Markup, TelegramError } from 'telegraf';
 
-import { BroadcastPayload } from './broadcast.interfaces';
+import { BroadcastButton, BroadcastButtonType, BroadcastPayload } from './broadcast.interfaces';
 import { QUEUE_BROADCAST } from './constant';
 
 import { MediaService } from '@/common/services';
+import { exhaustiveCheck } from '@/common/utils';
 
 interface BroadcastJobData {
   ids: number[];
@@ -49,7 +50,9 @@ export class BroadcastWorker extends WorkerHost {
   private async sendWithRetry(id: number, message: BroadcastPayload, job: Job) {
     for (let attempt = 1; attempt <= BroadcastWorker.MAX_ATTEMPTS_PER_USER; attempt++) {
       try {
-        await this.mediaService.sendText(Number(id), message.text, { entities: message.entities });
+        const inlineKeyboard = this.buildInlineKeyboard(message.buttons);
+
+        await this.mediaService.sendText(Number(id), message.text, { entities: message.entities, inlineKeyboard });
         return;
       } catch (err: unknown) {
         if (err instanceof TelegramError) {
@@ -72,5 +75,25 @@ export class BroadcastWorker extends WorkerHost {
     }
 
     await job.log(`Give up sending to ${id} after ${BroadcastWorker.MAX_ATTEMPTS_PER_USER} attempts`);
+  }
+
+  private buildInlineKeyboard(buttons?: BroadcastButton[]) {
+    if (!buttons?.length) {
+      return undefined;
+    }
+
+    return Markup.inlineKeyboard(
+      buttons.map(button => {
+        switch (button.type) {
+          case BroadcastButtonType.URL:
+            return Markup.button.url(button.label, button.url);
+          case BroadcastButtonType.ACTION:
+            return Markup.button.callback(button.label, button.action);
+          default:
+            exhaustiveCheck(button);
+        }
+      }),
+      { columns: 1 },
+    );
   }
 }
