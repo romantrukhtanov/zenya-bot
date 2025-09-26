@@ -23,7 +23,7 @@ export class AgentClient {
       instructions: AGENT_INSTRUCTIONS,
       model: config.model ?? 'gpt-5-mini',
       modelSettings: {
-        maxTokens: 3500,
+        maxTokens: config.maxTokens ?? 1000,
       },
     });
   }
