@@ -13,6 +13,6 @@ export const PAYMENT_INSTRUCTION_LINK = process.env.PAYMENT_INSTRUCTION_LINK ?? 
 export const TELEGRAM_ICON = process.env.TELEGRAM_ICON ?? '';
 
 export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? '';
-export const OPENAI_MODEL = process.env.OPENAI_MODEL ?? 'gpt-4o-mini';
+export const OPENAI_MODEL = process.env.OPENAI_MODEL ?? 'gpt-5-mini';
 export const OPENAI_PROMPT_BUDGET = Number(process.env.OPENAI_PROMPT_BUDGET ?? 3500);
 export const OPENAI_MAX_COMPLETION = Number(process.env.OPENAI_MAX_COMPLETION);

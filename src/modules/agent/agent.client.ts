@@ -8,7 +8,6 @@ type AgentClientConfig = {
   maxTokens: number;
   name?: string;
   model?: string;
-  temperature?: number;
 };
 
 @Injectable()
@@ -22,10 +21,9 @@ export class AgentClient {
     this.agent = new Agent({
       name: config.name ?? 'Zenya',
       instructions: AGENT_INSTRUCTIONS,
-      model: config.model ?? 'gpt-4o-mini',
+      model: config.model ?? 'gpt-5-mini',
       modelSettings: {
-        temperature: config.temperature ?? 0.7,
-        maxTokens: config.maxTokens,
+        maxTokens: 3500,
       },
     });
   }

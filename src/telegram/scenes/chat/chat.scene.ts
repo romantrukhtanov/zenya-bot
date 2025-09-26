@@ -7,6 +7,7 @@ import { getCancelConversation, getChatButtons } from './helpers';
 import { ChatWizardContext } from './types';
 
 import { MainMenuService, MediaService } from '@/common/services';
+import { isUserAdmin } from '@/common/utils';
 import { AgentService } from '@/modules/agent/agent.service';
 import { UserService } from '@/modules/user';
 import { BotScene } from '@/telegram/constants';
@@ -42,8 +43,9 @@ export class ChatWizard extends BaseWizardScene<ChatWizardContext> {
     }
 
     const userReplicas = user.replicas;
+    const isAdmin = isUserAdmin(user.role);
 
-    if (userReplicas === 0) {
+    if (userReplicas <= 0 && !isAdmin) {
       await this.mediaService.sendVideo(ctx, ChatMedia.Intro, {
         caption: translations.scenes.chat.noReplies,
         parseMode: 'MarkdownV2',
