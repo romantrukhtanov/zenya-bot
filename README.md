@@ -1,5 +1,7 @@
 # 🧠 Zenya PSY Bot
 
+👉 [Try Zenya on Telegram](https://t.me/zenya_psy_bot)
+
 > **Intelligent Telegram Bot for Psychology Support and Mental Health Assistance**
 
 Zenya PSY Bot is a comprehensive psychology platform built as a Telegram bot, offering AI-powered mental health support, personalized content delivery, and administrative tools for psychology professionals.
