@@ -5,7 +5,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { PrismaModule } from './prisma/prisma.module';
 
 import { serveStaticOptionsFactory } from '@/common/factories';
-import { HealthController } from '@/controllets';
+import { HealthController } from '@/controllers';
 import { AgentModule } from '@/modules/agent';
 import { BroadcastModule } from '@/modules/broadcast';
 import { PaymentModule } from '@/modules/payment';
